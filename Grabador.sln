@@ -1,0 +1,28 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GrabadorConsole", "GrabadorConsole\GrabadorConsole.csproj", "{212204F6-420D-4631-BED4-B0A18918608F}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Grabador", "Grabador\Grabador.csproj", "{38565C49-F142-44F4-AE67-93B9629B7383}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Grabador.Core", "Grabador.Core\Grabador.Core.csproj", "{F70F4F0E-510D-45E2-88FE-7E679AEC6B9F}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{212204F6-420D-4631-BED4-B0A18918608F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{212204F6-420D-4631-BED4-B0A18918608F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{212204F6-420D-4631-BED4-B0A18918608F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{212204F6-420D-4631-BED4-B0A18918608F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{38565C49-F142-44F4-AE67-93B9629B7383}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{38565C49-F142-44F4-AE67-93B9629B7383}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{38565C49-F142-44F4-AE67-93B9629B7383}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{38565C49-F142-44F4-AE67-93B9629B7383}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F70F4F0E-510D-45E2-88FE-7E679AEC6B9F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F70F4F0E-510D-45E2-88FE-7E679AEC6B9F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F70F4F0E-510D-45E2-88FE-7E679AEC6B9F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F70F4F0E-510D-45E2-88FE-7E679AEC6B9F}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+EndGlobal
