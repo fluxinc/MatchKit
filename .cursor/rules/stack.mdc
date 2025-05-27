@@ -1,0 +1,27 @@
+---
+description:
+globs:
+alwaysApply: true
+---
+# Project Stack
+
+- This is a .NET 4.8 project
+
+## Folder Structure
+
+- Grabador.Core/
+  - Grabador.Core.csproj - Shared library project
+  - *.cs - Shared classes
+- Grabador/
+  - Grabador.csproj - Console application project
+  - Program.cs - Console application entry point
+- Grabador.sln - Main solution file
+- README.md - Project README file
+
+## Libaries
+
+- System.UIAutomation
+- Sustem.UIAutomationTypes
+- Newtonsoft.JSON
+
+IGNORE MISSING LIBRARIES. YOU ARE DEVELOPING ON MACOS, AND SYNCTHINGING TO A WINDOWS HOST TO COMPILE LATER

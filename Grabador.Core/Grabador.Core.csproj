@@ -37,15 +37,20 @@
         <Reference Include="System"/>
         <Reference Include="System.Core"/>
         <Reference Include="System.Data"/>
+        <Reference Include="System.Net.Http.WebRequest" />
         <Reference Include="System.Xml"/>
+        <Reference Include="System.Net.Http"/>
         <Reference Include="UIAutomationClient" />
         <Reference Include="UIAutomationTypes" />
     </ItemGroup>
     <ItemGroup>
         <PackageReference Include="Interop.UIAutomationClient" Version="10.19041.0" />
+        <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
     </ItemGroup>
     <ItemGroup>
         <Compile Include="TextAutomationService.cs"/>
+        <Compile Include="HttpUtilityService.cs"/>
+        <Compile Include="AutomationOrchestrator.cs"/>
         <Compile Include="Properties\AssemblyInfo.cs"/>
     </ItemGroup>
     <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets"/>

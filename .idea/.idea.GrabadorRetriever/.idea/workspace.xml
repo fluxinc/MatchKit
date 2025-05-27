@@ -20,20 +20,41 @@
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
+  <component name="GitHubPullRequestSearchHistory">{
+  &quot;lastFilter&quot;: {
+    &quot;state&quot;: &quot;OPEN&quot;,
+    &quot;assignee&quot;: &quot;mostlydev&quot;
+  }
+}</component>
+  <component name="GithubPullRequestsUISettings">{
+  &quot;selectedUrlAndAccountId&quot;: {
+    &quot;url&quot;: &quot;https://github.com/mostlydev/GrabadorRetriever.git&quot;,
+    &quot;accountId&quot;: &quot;8b288217-6bce-4ca4-b00b-33f9a82a59e8&quot;
+  }
+}</component>
   <component name="HighlightingSettingsPerFile">
+    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/598711644ae14c3e9a435d21d2f79ce54800/b1/0455dcef/Program.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Grabador.Core/HttpUtilityService.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Grabador.Core/TextAutomationService.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Grabador/Program.cs" root0="FORCE_HIGHLIGHTING" />
-    <setting file="file://$PROJECT_DIR$/GrabadorConsole/Program.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Grabador/Properties/AssemblyInfo.cs" root0="FORCE_HIGHLIGHTING" />
   </component>
   <component name="ProjectColorInfo">{
   &quot;associatedIndex&quot;: 1
 }</component>
   <component name="ProjectId" id="2xNxvqNVRAEMt79eJ39aAxRSRVX" />
+  <component name="ProjectLevelVcsManager">
+    <ConfirmationsSetting value="2" id="Add" />
+    <ConfirmationsSetting value="2" id="Remove" />
+  </component>
   <component name="ProjectViewState">
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
   <component name="PropertiesComponent">{
   &quot;keyToString&quot;: {
+    &quot;.NET Project.Grabador (--list-windows).executor&quot;: &quot;Debug&quot;,
+    &quot;.NET Project.Grabador (rider64).executor&quot;: &quot;Debug&quot;,
     &quot;.NET Project.Grabador.executor&quot;: &quot;Debug&quot;,
     &quot;.NET Project.GrabadorConsole (--list-windows).executor&quot;: &quot;Debug&quot;,
     &quot;.NET Project.GrabadorConsole (Cursor).executor&quot;: &quot;Debug&quot;,
@@ -54,7 +75,76 @@
     &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
   }
 }</component>
-  <component name="RunManager" selected=".NET Project.GrabadorConsole (rider64)">
+  <component name="RunManager" selected=".NET Project.Grabador (rider64)">
+    <configuration name="Grabador (--list-windows)" type="DotNetProject" factoryName=".NET Project">
+      <option name="EXE_PATH" value="$PROJECT_DIR$/Grabador/bin/Debug/Grabador.exe" />
+      <option name="PROGRAM_PARAMETERS" value="--list-windows" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/Grabador/bin/Debug" />
+      <option name="PASS_PARENT_ENVS" value="1" />
+      <option name="USE_EXTERNAL_CONSOLE" value="0" />
+      <option name="ENV_FILE_PATHS" value="" />
+      <option name="REDIRECT_INPUT_PATH" value="" />
+      <option name="PTY_MODE" value="Auto" />
+      <option name="USE_MONO" value="0" />
+      <option name="RUNTIME_ARGUMENTS" value="" />
+      <option name="AUTO_ATTACH_CHILDREN" value="0" />
+      <option name="MIXED_MODE_DEBUG" value="0" />
+      <option name="PROJECT_PATH" value="$PROJECT_DIR$/Grabador/Grabador.csproj" />
+      <option name="PROJECT_EXE_PATH_TRACKING" value="1" />
+      <option name="PROJECT_ARGUMENTS_TRACKING" value="1" />
+      <option name="PROJECT_WORKING_DIRECTORY_TRACKING" value="1" />
+      <option name="PROJECT_KIND" value="Console" />
+      <option name="PROJECT_TFM" value=".NETFramework,Version=v4.8.1" />
+      <method v="2">
+        <option name="Build" />
+      </method>
+    </configuration>
+    <configuration name="Grabador (rider64)" type="DotNetProject" factoryName=".NET Project">
+      <option name="EXE_PATH" value="$PROJECT_DIR$/Grabador/bin/Debug/Grabador.exe" />
+      <option name="PROGRAM_PARAMETERS" value="-d -w rider64 -r &quot;.*Grabador.*&quot; -u &quot;http://127.0.0.1:3000/$1&quot;" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/Grabador/bin/Debug" />
+      <option name="PASS_PARENT_ENVS" value="1" />
+      <option name="USE_EXTERNAL_CONSOLE" value="0" />
+      <option name="ENV_FILE_PATHS" value="" />
+      <option name="REDIRECT_INPUT_PATH" value="" />
+      <option name="PTY_MODE" value="Auto" />
+      <option name="USE_MONO" value="0" />
+      <option name="RUNTIME_ARGUMENTS" value="" />
+      <option name="AUTO_ATTACH_CHILDREN" value="0" />
+      <option name="MIXED_MODE_DEBUG" value="0" />
+      <option name="PROJECT_PATH" value="$PROJECT_DIR$/Grabador/Grabador.csproj" />
+      <option name="PROJECT_EXE_PATH_TRACKING" value="1" />
+      <option name="PROJECT_ARGUMENTS_TRACKING" value="1" />
+      <option name="PROJECT_WORKING_DIRECTORY_TRACKING" value="1" />
+      <option name="PROJECT_KIND" value="Console" />
+      <option name="PROJECT_TFM" value=".NETFramework,Version=v4.8.1" />
+      <method v="2">
+        <option name="Build" />
+      </method>
+    </configuration>
+    <configuration name="Grabador" type="DotNetProject" factoryName=".NET Project">
+      <option name="EXE_PATH" value="$PROJECT_DIR$/Grabador/bin/Debug/Grabador.exe" />
+      <option name="PROGRAM_PARAMETERS" value="&quot;^.+Cursor.+&quot; GrabadorConsole" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/Grabador/bin/Debug" />
+      <option name="PASS_PARENT_ENVS" value="1" />
+      <option name="USE_EXTERNAL_CONSOLE" value="0" />
+      <option name="ENV_FILE_PATHS" value="" />
+      <option name="REDIRECT_INPUT_PATH" value="" />
+      <option name="PTY_MODE" value="Auto" />
+      <option name="USE_MONO" value="0" />
+      <option name="RUNTIME_ARGUMENTS" value="" />
+      <option name="AUTO_ATTACH_CHILDREN" value="0" />
+      <option name="MIXED_MODE_DEBUG" value="0" />
+      <option name="PROJECT_PATH" value="$PROJECT_DIR$/Grabador/Grabador.csproj" />
+      <option name="PROJECT_EXE_PATH_TRACKING" value="1" />
+      <option name="PROJECT_ARGUMENTS_TRACKING" value="1" />
+      <option name="PROJECT_WORKING_DIRECTORY_TRACKING" value="1" />
+      <option name="PROJECT_KIND" value="Console" />
+      <option name="PROJECT_TFM" value=".NETFramework,Version=v4.8.1" />
+      <method v="2">
+        <option name="Build" />
+      </method>
+    </configuration>
     <configuration name="Grabador" type="DotNetProject" factoryName=".NET Project">
       <option name="EXE_PATH" value="$PROJECT_DIR$/Grabador/bin/Debug/Grabador.exe" />
       <option name="PROGRAM_PARAMETERS" value="" />
@@ -78,80 +168,10 @@
         <option name="Build" />
       </method>
     </configuration>
-    <configuration name="GrabadorConsole (--list-windows)" type="DotNetProject" factoryName=".NET Project">
-      <option name="EXE_PATH" value="$PROJECT_DIR$/GrabadorConsole/bin/Debug/GrabadorConsole.exe" />
-      <option name="PROGRAM_PARAMETERS" value="--list-windows" />
-      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/GrabadorConsole/bin/Debug" />
-      <option name="PASS_PARENT_ENVS" value="1" />
-      <option name="USE_EXTERNAL_CONSOLE" value="0" />
-      <option name="ENV_FILE_PATHS" value="" />
-      <option name="REDIRECT_INPUT_PATH" value="" />
-      <option name="PTY_MODE" value="Auto" />
-      <option name="USE_MONO" value="0" />
-      <option name="RUNTIME_ARGUMENTS" value="" />
-      <option name="AUTO_ATTACH_CHILDREN" value="0" />
-      <option name="MIXED_MODE_DEBUG" value="0" />
-      <option name="PROJECT_PATH" value="$PROJECT_DIR$/GrabadorConsole/GrabadorConsole.csproj" />
-      <option name="PROJECT_EXE_PATH_TRACKING" value="1" />
-      <option name="PROJECT_ARGUMENTS_TRACKING" value="1" />
-      <option name="PROJECT_WORKING_DIRECTORY_TRACKING" value="1" />
-      <option name="PROJECT_KIND" value="Console" />
-      <option name="PROJECT_TFM" value=".NETFramework,Version=v4.8.1" />
-      <method v="2">
-        <option name="Build" />
-      </method>
-    </configuration>
-    <configuration name="GrabadorConsole (rider64)" type="DotNetProject" factoryName=".NET Project">
-      <option name="EXE_PATH" value="$PROJECT_DIR$/GrabadorConsole/bin/Debug/GrabadorConsole.exe" />
-      <option name="PROGRAM_PARAMETERS" value="rider64 &quot;.*Grabador.*&quot;" />
-      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/GrabadorConsole/bin/Debug" />
-      <option name="PASS_PARENT_ENVS" value="1" />
-      <option name="USE_EXTERNAL_CONSOLE" value="0" />
-      <option name="ENV_FILE_PATHS" value="" />
-      <option name="REDIRECT_INPUT_PATH" value="" />
-      <option name="PTY_MODE" value="Auto" />
-      <option name="USE_MONO" value="0" />
-      <option name="RUNTIME_ARGUMENTS" value="" />
-      <option name="AUTO_ATTACH_CHILDREN" value="0" />
-      <option name="MIXED_MODE_DEBUG" value="0" />
-      <option name="PROJECT_PATH" value="$PROJECT_DIR$/GrabadorConsole/GrabadorConsole.csproj" />
-      <option name="PROJECT_EXE_PATH_TRACKING" value="1" />
-      <option name="PROJECT_ARGUMENTS_TRACKING" value="1" />
-      <option name="PROJECT_WORKING_DIRECTORY_TRACKING" value="1" />
-      <option name="PROJECT_KIND" value="Console" />
-      <option name="PROJECT_TFM" value=".NETFramework,Version=v4.8.1" />
-      <method v="2">
-        <option name="Build" />
-      </method>
-    </configuration>
-    <configuration name="GrabadorConsole" type="DotNetProject" factoryName=".NET Project">
-      <option name="EXE_PATH" value="$PROJECT_DIR$/GrabadorConsole/bin/Debug/GrabadorConsole.exe" />
-      <option name="PROGRAM_PARAMETERS" value="&quot;^.+Cursor.+&quot; GrabadorConsole" />
-      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/GrabadorConsole/bin/Debug" />
-      <option name="PASS_PARENT_ENVS" value="1" />
-      <option name="USE_EXTERNAL_CONSOLE" value="0" />
-      <option name="ENV_FILE_PATHS" value="" />
-      <option name="REDIRECT_INPUT_PATH" value="" />
-      <option name="PTY_MODE" value="Auto" />
-      <option name="USE_MONO" value="0" />
-      <option name="RUNTIME_ARGUMENTS" value="" />
-      <option name="AUTO_ATTACH_CHILDREN" value="0" />
-      <option name="MIXED_MODE_DEBUG" value="0" />
-      <option name="PROJECT_PATH" value="$PROJECT_DIR$/GrabadorConsole/GrabadorConsole.csproj" />
-      <option name="PROJECT_EXE_PATH_TRACKING" value="1" />
-      <option name="PROJECT_ARGUMENTS_TRACKING" value="1" />
-      <option name="PROJECT_WORKING_DIRECTORY_TRACKING" value="1" />
-      <option name="PROJECT_KIND" value="Console" />
-      <option name="PROJECT_TFM" value=".NETFramework,Version=v4.8.1" />
-      <method v="2">
-        <option name="Build" />
-      </method>
-    </configuration>
     <list>
       <item itemvalue=".NET Project.Grabador" />
-      <item itemvalue=".NET Project.GrabadorConsole" />
-      <item itemvalue=".NET Project.GrabadorConsole (rider64)" />
-      <item itemvalue=".NET Project.GrabadorConsole (--list-windows)" />
+      <item itemvalue=".NET Project.Grabador (rider64)" />
+      <item itemvalue=".NET Project.Grabador (--list-windows)" />
     </list>
   </component>
   <component name="TaskManager">
@@ -162,7 +182,7 @@
       <option name="presentableId" value="Default" />
       <updated>1747792565935</updated>
       <workItem from="1747792568295" duration="586000" />
-      <workItem from="1747793170309" duration="11499000" />
+      <workItem from="1747793170309" duration="16081000" />
     </task>
     <servers />
   </component>

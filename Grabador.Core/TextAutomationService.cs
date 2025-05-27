@@ -3,6 +3,7 @@ using System.Diagnostics;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Windows.Automation;
+using System.Net.Http; // Added for HttpClient
 // Note: System.Windows.Forms should not be referenced here for core logic if it's to be truly shareable outside WinForms contexts.
 
 namespace Grabador.Core
@@ -241,5 +242,8 @@ namespace Grabador.Core
                 }
             }
         }
+
+        // Helper method for UI Automation.
+        // This might be better placed in a utility class or as part of a more specific service if Grabador.Core grows more features.
     }
 }
