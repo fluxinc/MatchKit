@@ -52,7 +52,7 @@ Windows system tray application for hotkey-triggered automation:
 
 ```bash
 # Clone the repository
-git clone https://github.com/yourusername/grabador.git
+git clone https://github.com/mostlydev/Grabador.git
 cd grabador
 
 # Build the solution
@@ -66,7 +66,7 @@ msbuild Grabador.Tray\Grabador.Tray.csproj
 
 ### Binary Installation
 
-Download the latest release from the [Releases](https://github.com/mostlydev/grabador/releases) page.
+Download the latest release from the [Releases](https://github.com/mostlydev/Grabador/releases) page.
 
 ## Usage
 
@@ -262,4 +262,4 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ## Support
 
-For issues, questions, or contributions, please use the [GitHub Issues](https://github.com/yourusername/grabador/issues) page.
+For issues, questions, or contributions, please use the [GitHub Issues](https://github.com/mostlydev/Grabador/issues) page.
