@@ -3,6 +3,8 @@ using System.Drawing;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using Grabador.Core;
+using System.Threading;
+using System.Text;
 
 namespace Grabador.Tray
 {
@@ -11,17 +13,71 @@ namespace Grabador.Tray
         private NotifyIcon _trayIcon;
         private readonly AutomationOrchestrator _orchestrator;
         private readonly AutomationOrchestrator.AutomationConfig _config;
-        private readonly Keys _hotkey;
+        private readonly Keys _hotkeyEnumInternal;
         private Form _hiddenForm;
+        private StringBuilder _threadLog;
+
+        private Mutex _hotkeyMutex;
+        private string _hotkeyMutexName;
+        private bool _debugModeInternal;
 
         public TrayApplicationContext(
             string windowIdentifier,
             string regexPattern,
             string urlTemplate,
             string jsonKey,
-            Keys hotkey,
-            bool debugMode)
+            Keys hotkeyEnum,
+            bool debugMode,
+            string hotkeyStringLiteral
+            )
         {
+            _threadLog = new StringBuilder();
+            _debugModeInternal = debugMode;
+            LogThreadInfo("[TrayApplicationContext] Constructor entered");
+
+            string sanitizedHotkeyString = hotkeyStringLiteral
+                .Replace("+", "_Plus_")
+                .Replace("^", "Ctrl_")
+                .Replace("%", "Alt_")
+                .Replace("#", "Win_")
+                .Replace("!", "Shift_")
+                .Replace(" ", "_Space_")
+                .Replace("\\", "_Backslash_")
+                .Replace("/", "_Slash_")
+                .Replace(":", "_Colon_")
+                .Replace("*", "_Asterisk_")
+                .Replace("?", "_Question_")
+                .Replace("\"", "_Quote_")
+                .Replace("<", "_LessThan_")
+                .Replace(">", "_GreaterThan_")
+                .Replace("|", "_Pipe_")
+                .Replace(",", "_Comma_")
+                .Replace(".", "_Period_");
+
+            _hotkeyMutexName = Program.TrayAppMutexPrefix + sanitizedHotkeyString;
+            bool createdNewMutex;
+
+            try
+            {
+                _hotkeyMutex = new Mutex(true, _hotkeyMutexName, out createdNewMutex);
+            }
+            catch (Exception ex)
+            {
+                LogThreadInfo($"[TrayApplicationContext] CRITICAL: Failed to create or acquire mutex '{_hotkeyMutexName}'. Exception: {ex}");
+                MessageBox.Show($"A critical error occurred while trying to initialize the hotkey exclusivity lock for '{hotkeyStringLiteral}'.\n\nError: {ex.Message}", "Mutex Creation Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                Environment.Exit(1);
+                return;
+            }
+
+            if (!createdNewMutex)
+            {
+                LogThreadInfo($"[TrayApplicationContext] Mutex '{_hotkeyMutexName}' already exists. Another instance with hotkey '{hotkeyStringLiteral}' is likely running.");
+                MessageBox.Show($"An instance of Grabador.Tray with the hotkey '{hotkeyStringLiteral}' is already running.\nOnly one instance per hotkey is allowed.", "Instance Already Running", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                Environment.Exit(1);
+                return;
+            }
+            LogThreadInfo($"[TrayApplicationContext] Successfully acquired mutex '{_hotkeyMutexName}' for hotkey '{hotkeyStringLiteral}'.");
+
             _orchestrator = new AutomationOrchestrator(debugMode);
             _config = new AutomationOrchestrator.AutomationConfig
             {
@@ -31,19 +87,20 @@ namespace Grabador.Tray
                 JsonKey = jsonKey,
                 DebugMode = debugMode
             };
-            _hotkey = hotkey;
+            _hotkeyEnumInternal = hotkeyEnum;
 
-            InitializeTrayIcon();
+            InitializeTrayIcon(hotkeyStringLiteral);
             RegisterHotkey();
+            LogThreadInfo("[TrayApplicationContext] Constructor finished successfully");
         }
 
-        private void InitializeTrayIcon()
+        private void InitializeTrayIcon(string hotkeyStringForDisplay)
         {
             _trayIcon = new NotifyIcon
             {
-                Icon = SystemIcons.Application, // You can replace with a custom icon
+                Icon = SystemIcons.Application,
                 Visible = true,
-                Text = "Grabador.Tray - Press " + GetHotkeyDisplay()
+                Text = "Grabador.Tray - Press " + hotkeyStringForDisplay
             };
 
             var contextMenu = new ContextMenuStrip();
@@ -59,30 +116,7 @@ namespace Grabador.Tray
 
         private void RegisterHotkey()
         {
-            // Create a hidden form to receive hotkey messages
-            _hiddenForm = new Form
-            {
-                WindowState = FormWindowState.Minimized,
-                ShowInTaskbar = false,
-                Visible = false
-            };
-
-            _hiddenForm.Load += (s, e) =>
-            {
-                Form1.RegisterHotKey(_hiddenForm, _hotkey);
-            };
-
-            _hiddenForm.FormClosing += (s, e) =>
-            {
-                Form1.UnregisterHotKey(_hiddenForm);
-            };
-
-            // Override WndProc to handle hotkey
-            _hiddenForm.Shown += (s, e) => _hiddenForm.Hide();
-
-            // Create custom form class to handle WndProc
-            var hotkeyForm = new HotkeyForm(async () => await ExecuteAutomation());
-            hotkeyForm.RegisterKey(_hotkey);
+            var hotkeyForm = new HotkeyForm(async () => await ExecuteAutomation(), _hotkeyEnumInternal, LogThreadInfo);
             hotkeyForm.Show();
             hotkeyForm.Hide();
             _hiddenForm = hotkeyForm;
@@ -91,11 +125,11 @@ namespace Grabador.Tray
         private string GetHotkeyDisplay()
         {
             var display = "";
-            if ((_hotkey & Keys.Control) == Keys.Control) display += "Ctrl+";
-            if ((_hotkey & Keys.Alt) == Keys.Alt) display += "Alt+";
-            if ((_hotkey & Keys.Shift) == Keys.Shift) display += "Shift+";
+            if ((_hotkeyEnumInternal & Keys.Control) == Keys.Control) display += "Ctrl+";
+            if ((_hotkeyEnumInternal & Keys.Alt) == Keys.Alt) display += "Alt+";
+            if ((_hotkeyEnumInternal & Keys.Shift) == Keys.Shift) display += "Shift+";
 
-            var key = _hotkey & ~Keys.Control & ~Keys.Alt & ~Keys.Shift;
+            var key = _hotkeyEnumInternal & ~Keys.Control & ~Keys.Alt & ~Keys.Shift;
             display += key.ToString();
 
             return display;
@@ -117,28 +151,40 @@ namespace Grabador.Tray
 
         private async Task ExecuteAutomation()
         {
+            LogThreadInfo("[ExecuteAutomation] Method entered");
+
             try
             {
                 var result = await _orchestrator.ExecuteAsync(_config);
 
+                LogThreadInfo("[ExecuteAutomation] After await _orchestrator.ExecuteAsync");
+
                 if (!result.Success)
                 {
+                    if (_config.DebugMode)
+                    {
+                        result.Error += $"\n\nThread Log:\n{_threadLog.ToString()}";
+                    }
                     ShowBalloonTip("Unable to complete operation",
                         GetUserFriendlyError(result.Error), ToolTipIcon.Error);
                     return;
                 }
 
-                // Use the hidden form to ensure we're on the UI/STA thread
                 _hiddenForm.Invoke(new Action(() =>
                 {
-                    // Copy to clipboard
+                    LogThreadInfo("[ExecuteAutomation] Inside Invoke block");
+
+                    LogThreadInfo("[ExecuteAutomation] Before Clipboard.SetText");
                     Clipboard.SetText(result.Value);
+                    LogThreadInfo("[ExecuteAutomation] After Clipboard.SetText");
 
-                    // Small delay to ensure clipboard is ready
+                    LogThreadInfo("[ExecuteAutomation] Before Thread.Sleep(100)");
                     System.Threading.Thread.Sleep(100);
+                    LogThreadInfo("[ExecuteAutomation] After Thread.Sleep(100)");
 
-                    // Paste using SendKeys
+                    LogThreadInfo("[ExecuteAutomation] Before SendKeys.SendWait");
                     SendKeys.SendWait("^v");
+                    LogThreadInfo("[ExecuteAutomation] After SendKeys.SendWait");
                 }));
 
                 ShowBalloonTip("Success", "Information pasted successfully", ToolTipIcon.Info);
@@ -147,7 +193,9 @@ namespace Grabador.Tray
             {
                 if (_config.DebugMode)
                 {
-                    ShowBalloonTip("Error", ex.Message, ToolTipIcon.Error);
+                    string errorWithLog = $"Error: {ex.Message}\n\nThread Log:\n{_threadLog.ToString()}";
+                    MessageBox.Show(errorWithLog, "Grabador.Tray Error",
+                        MessageBoxButtons.OK, MessageBoxIcon.Error);
                 }
                 else
                 {
@@ -194,26 +242,49 @@ namespace Grabador.Tray
             {
                 _trayIcon?.Dispose();
                 _hiddenForm?.Dispose();
+
+                try
+                {
+                    _hotkeyMutex?.ReleaseMutex();
+                }
+                catch (ApplicationException ex)
+                {
+                    LogThreadInfo($"[TrayApplicationContext] Warning: Exception when trying to release mutex '{_hotkeyMutexName}': {ex.Message}");
+                }
+                _hotkeyMutex?.Dispose();
+                LogThreadInfo($"[TrayApplicationContext] Mutex '{_hotkeyMutexName}' released and disposed.");
             }
             base.Dispose(disposing);
         }
+
+        private void LogThreadInfo(string message)
+        {
+            string logEntry = $"{message} - Thread: {Thread.CurrentThread.ManagedThreadId}, Apartment: {Thread.CurrentThread.GetApartmentState()}";
+            _threadLog.AppendLine(logEntry);
+            Console.WriteLine(logEntry);
+        }
     }
 
-    // Custom form to handle hotkey messages
     internal class HotkeyForm : Form
     {
         private readonly Func<Task> _hotkeyAction;
+        private Keys _keyToRegister;
+        private Action<string> _logThreadInfoAction;
 
-        public HotkeyForm(Func<Task> hotkeyAction)
+        public HotkeyForm(Func<Task> hotkeyAction, Keys keyToRegister, Action<string> logThreadInfoAction)
         {
             _hotkeyAction = hotkeyAction;
+            _keyToRegister = keyToRegister;
+            _logThreadInfoAction = logThreadInfoAction;
             WindowState = FormWindowState.Minimized;
             ShowInTaskbar = false;
         }
 
-        public void RegisterKey(Keys key)
+        protected override void OnLoad(EventArgs e)
         {
-            Form1.RegisterHotKey(this, key);
+            base.OnLoad(e);
+            _logThreadInfoAction("[HotkeyForm] OnLoad entered");
+            Form1.RegisterHotKey(this, _keyToRegister);
         }
 
         protected override void WndProc(ref Message m)
@@ -222,6 +293,7 @@ namespace Grabador.Tray
 
             if (m.Msg == Form1.WM_HOTKEY)
             {
+                _logThreadInfoAction("[HotkeyForm] WndProc entered");
                 Task.Run(_hotkeyAction);
             }
         }

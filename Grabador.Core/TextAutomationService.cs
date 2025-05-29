@@ -15,19 +15,18 @@ namespace Grabador.Core
         public AutomationElement FindWindow(string identifier)
         {
             // This is the migrated FindWindowInternal logic
-            if (DebugMode) Console.WriteLine($"[CoreSvc] Attempting to find window with identifier: `{identifier}`"); // Conditional logging
+            Console.WriteLine($"[CoreSvc] Attempting to find window with identifier: `{identifier}`"); // Conditional logging
 
             AutomationElementCollection windows = AutomationElement.RootElement.FindAll(TreeScope.Children, Condition.TrueCondition);
             foreach (AutomationElement windowElement in windows)
             {
                 try
                 {
-                    // Debug logging removed
                     if (windowElement != null && !string.IsNullOrEmpty(windowElement.Current.Name) && !windowElement.Current.IsOffscreen)
                     {
                         if (Regex.IsMatch(windowElement.Current.Name, identifier, RegexOptions.IgnoreCase))
                         {
-                            if (DebugMode) Console.WriteLine($"[CoreSvc] Found window by title regex: {windowElement.Current.Name}");
+                            Console.WriteLine($"[CoreSvc] Found window by title regex: {windowElement.Current.Name}");
                             return windowElement;
                         }
                     }
@@ -60,7 +59,7 @@ namespace Grabador.Core
                             // Additional check to ensure the window is valid and has a name (sometimes FromHandle can return unusable elements)
                             if (window != null && !string.IsNullOrEmpty(window.Current.Name))
                             {
-                                if (DebugMode) Console.WriteLine($"[CoreSvc] Found window by process name: {window.Current.Name} (PID: {p.Id})");
+                                Console.WriteLine($"[CoreSvc] Found window by process name: {window.Current.Name} (PID: {p.Id})");
                                 return window;
                             }
                         }
@@ -69,9 +68,9 @@ namespace Grabador.Core
             }
             catch (ArgumentException ex) // Catches invalid process names for GetProcessesByName
             {
-                if (DebugMode) Console.WriteLine($"[CoreSvc] Error finding process by name '{identifier}': {ex.Message}. This identifier may be invalid for process name matching.");
+                Console.WriteLine($"[CoreSvc] Error finding process by name '{identifier}': {ex.Message}. This identifier may be invalid for process name matching.");
             }
-            if (DebugMode) Console.WriteLine($"[CoreSvc] Window '{identifier}' not found.");
+            Console.WriteLine($"[CoreSvc] Window '{identifier}' not found.");
             return null;
         }
 
@@ -80,11 +79,11 @@ namespace Grabador.Core
             // This is the migrated GetTextFromElementInternal logic
             if (element == null)
             {
-                if (DebugMode) Console.WriteLine("[CoreSvc.GetText] Element is null, returning empty string."); // Conditional
+                Console.WriteLine("[CoreSvc.GetText] Element is null, returning empty string."); // Conditional
                 return string.Empty;
             }
 
-            if (DebugMode) Console.WriteLine($"[CoreSvc.GetText] Processing element: {element.Current.Name} (ClassName: {element.Current.ClassName}, ControlType: {element.Current.LocalizedControlType})"); // Conditional
+            Console.WriteLine($"[CoreSvc.GetText] Processing element: {element.Current.Name} (ClassName: {element.Current.ClassName}, ControlType: {element.Current.LocalizedControlType})"); // Conditional
             string accumulatedText = "";
             try
             {
@@ -93,55 +92,54 @@ namespace Grabador.Core
                 {
                     TextPattern textPattern = (TextPattern)textPatternObj;
                     string text = textPattern.DocumentRange.GetText(-1).Trim();
-                    if (DebugMode) Console.WriteLine($"[CoreSvc.GetText] Main element TextPattern: '{text}'"); // Conditional
+                    Console.WriteLine($"[CoreSvc.GetText] Main element TextPattern: '{text}'"); // Conditional
                     if (!string.IsNullOrEmpty(text)) accumulatedText += text + "\n";
                 }
                 else if (element.TryGetCurrentPattern(ValuePattern.Pattern, out object valuePatternObj))
                 {
                     ValuePattern valuePattern = (ValuePattern)valuePatternObj;
                     string value = valuePattern.Current.Value.Trim();
-                    if (DebugMode) Console.WriteLine($"[CoreSvc.GetText] Main element ValuePattern: '{value}'"); // Conditional
+                    Console.WriteLine($"[CoreSvc.GetText] Main element ValuePattern: '{value}'"); // Conditional
                     if (!string.IsNullOrEmpty(value)) accumulatedText += value + "\n";
                 }
                 else if (!string.IsNullOrEmpty(element.Current.Name))
                 {
                     // Fallback to Name property if patterns are not supported
                     string name = element.Current.Name.Trim();
-                    if (DebugMode) Console.WriteLine($"[CoreSvc.GetText] Main element Name property: '{name}'"); // Conditional
+                    Console.WriteLine($"[CoreSvc.GetText] Main element Name property: '{name}'"); // Conditional
                     if (!string.IsNullOrEmpty(name)) accumulatedText += name + "\n";
                 }
                 else
                 {
-                    if (DebugMode) Console.WriteLine("[CoreSvc.GetText] Main element: No TextPattern, ValuePattern, or Name found."); // Conditional
+                    Console.WriteLine("[CoreSvc.GetText] Main element: No TextPattern, ValuePattern, or Name found."); // Conditional
                 }
 
                 // Recursively (or iteratively) get text from children - using FindAll with TreeScope.Descendants
                 // It's important to avoid adding duplicate text if parent already provided it or if children text is part of parent's text pattern.
                 // The original logic re-added child text. A more refined approach might be needed for complex UIs.
                 // For now, keeping a similar logic but being mindful of potential duplicates from descendants.
-                if (DebugMode) Console.WriteLine("[CoreSvc.GetText] Attempting to get text from descendants..."); // Conditional
+                Console.WriteLine("[CoreSvc.GetText] Attempting to get text from descendants..."); // Conditional
                 AutomationElementCollection children = element.FindAll(TreeScope.Descendants, Condition.TrueCondition);
-                if (DebugMode) Console.WriteLine($"[CoreSvc.GetText] Found {children.Count} descendants."); // Conditional
+                Console.WriteLine($"[CoreSvc.GetText] Found {children.Count} descendants."); // Conditional
                 foreach (AutomationElement child in children)
                 {
                     string childTextValue = "";
                     try
                     {
-                        //if (DebugMode) Console.WriteLine($"[CoreSvc.GetText] Child: {child.Current.Name} (ControlType: {child.Current.LocalizedControlType})"); // Example of more granular conditional
                         if (child.TryGetCurrentPattern(TextPattern.Pattern, out object childTextPatternObj))
                         {
                             childTextValue = ((TextPattern)childTextPatternObj).DocumentRange.GetText(-1).Trim();
-                            if (DebugMode && !string.IsNullOrEmpty(childTextValue)) Console.WriteLine($"[CoreSvc.GetText] Child TextPattern ({child.Current.Name}): '{childTextValue}'"); // Conditional
+                            if (!string.IsNullOrEmpty(childTextValue)) Console.WriteLine($"[CoreSvc.GetText] Child TextPattern ({child.Current.Name}): '{childTextValue}'"); // Conditional
                         }
                         else if (child.TryGetCurrentPattern(ValuePattern.Pattern, out object childValuePatternObj))
                         {
                             childTextValue = ((ValuePattern)childValuePatternObj).Current.Value.Trim();
-                            if (DebugMode && !string.IsNullOrEmpty(childTextValue)) Console.WriteLine($"[CoreSvc.GetText] Child ValuePattern ({child.Current.Name}): '{childTextValue}'"); // Conditional
+                            if (!string.IsNullOrEmpty(childTextValue)) Console.WriteLine($"[CoreSvc.GetText] Child ValuePattern ({child.Current.Name}): '{childTextValue}'"); // Conditional
                         }
                         else if (!string.IsNullOrEmpty(child.Current.Name))
                         {
                            childTextValue = child.Current.Name.Trim();
-                           if (DebugMode && !string.IsNullOrEmpty(childTextValue)) Console.WriteLine($"[CoreSvc.GetText] Child Name property ({child.Current.Name}): '{childTextValue}'"); // Conditional
+                           if (!string.IsNullOrEmpty(childTextValue)) Console.WriteLine($"[CoreSvc.GetText] Child Name property ({child.Current.Name}): '{childTextValue}'"); // Conditional
                         }
 
 
@@ -152,26 +150,26 @@ namespace Grabador.Core
                     }
                     catch (ElementNotAvailableException)
                     {
-                        if (DebugMode) Console.WriteLine($"[CoreSvc.GetText] Child element became unavailable: {child?.Current.Name ?? "N/A"}"); // Conditional
+                        Console.WriteLine($"[CoreSvc.GetText] Child element became unavailable: {child?.Current.Name ?? "N/A"}"); // Conditional
                         continue;
                     }
                     catch (Exception ex)
                     {
-                        if (DebugMode) Console.WriteLine($"[CoreSvc.GetText] Error processing child element ({child?.Current.Name ?? "N/A"}): {ex.Message}"); // Conditional
+                        Console.WriteLine($"[CoreSvc.GetText] Error processing child element ({child?.Current.Name ?? "N/A"}): {ex.Message}"); // Conditional
                     }
                 }
             }
             catch (Exception ex)
             {
-                if (DebugMode) Console.WriteLine($"[CoreSvc.GetText] Error in GetTextFromElement for element {element?.Current.Name ?? "N/A"}: {ex.Message}"); // Conditional
+                Console.WriteLine($"[CoreSvc.GetText] Error in GetTextFromElement for element {element?.Current.Name ?? "N/A"}: {ex.Message}"); // Conditional
             }
-            if (DebugMode) Console.WriteLine($"[CoreSvc.GetText] Accumulated text before final trim for {element?.Current.Name ?? "N/A"}:\n{accumulatedText}"); // Conditional
+            Console.WriteLine($"[CoreSvc.GetText] Accumulated text before final trim for {element?.Current.Name ?? "N/A"}:\n{accumulatedText}"); // Conditional
             return accumulatedText.Trim();
         }
 
         public async Task<(string? matchedText, string? error)> ExtractAndMatchAsync(string windowIdentifier, string regexPattern)
         {
-            if (DebugMode) Console.WriteLine($"[CoreSvc] Attempting extraction: Window '{windowIdentifier}', Regex: '{regexPattern}'"); // Conditional
+            Console.WriteLine($"[CoreSvc] Attempting extraction: Window '{windowIdentifier}', Regex: '{regexPattern}'"); // Conditional
             AutomationElement? targetWindow = await Task.Run(() => FindWindow(windowIdentifier));
 
             if (targetWindow == null)
@@ -193,17 +191,19 @@ namespace Grabador.Core
                 if (m.Success)
                 {
                     string result = m.Groups.Count > 1 && !string.IsNullOrEmpty(m.Groups[1].Value) ? m.Groups[1].Value : m.Value;
-                    if (DebugMode) Console.WriteLine("[CoreSvc] Match found: " + result);
+                    Console.WriteLine("[CoreSvc] Match found: " + result);
                     return (result, null);
                 }
                 else
                 {
-                    return (null, "No match found for the pattern.");
+                    Console.WriteLine("[CoreSvc] No match found.");
+                    return (null, "No match found.");
                 }
             }
-            catch (ArgumentException ex)
+            catch (Exception ex)
             {
-                return (null, $"Invalid regex pattern '{regexPattern}': {ex.Message}");
+                Console.WriteLine($"[CoreSvc] Error during regex matching: {ex.Message}");
+                return (null, $"Error during regex matching: {ex.Message}");
             }
         }
 
