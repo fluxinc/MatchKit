@@ -261,7 +261,7 @@ namespace MatchKit.Tray
         {
             string logEntry = $"{message} - Thread: {Thread.CurrentThread.ManagedThreadId}, Apartment: {Thread.CurrentThread.GetApartmentState()}";
             _threadLog.AppendLine(logEntry);
-            Console.WriteLine(logEntry);
+            if (_debugModeInternal) Console.WriteLine(logEntry);
         }
     }
 

@@ -53,7 +53,7 @@ namespace MatchKit.Core
             try
             {
                 // Step 1: Extract text using regex
-                Console.WriteLine($"[AutomationOrchestrator] Processing window: {config.WindowIdentifier} with regex: {config.RegexPattern}");
+                if (config.DebugMode) Console.WriteLine($"[AutomationOrchestrator] Processing window: {config.WindowIdentifier} with regex: {config.RegexPattern}");
 
                 var (matchedText, extractError) = await _automationService.ExtractAndMatchAsync(config.WindowIdentifier, config.RegexPattern);
 
@@ -77,10 +77,10 @@ namespace MatchKit.Core
                 // Step 2: Call URL if provided
                 if (!string.IsNullOrEmpty(config.UrlTemplate))
                 {
-                    Console.WriteLine($"[AutomationOrchestrator] URL template provided: {config.UrlTemplate}");
+                    if (config.DebugMode) Console.WriteLine($"[AutomationOrchestrator] URL template provided: {config.UrlTemplate}");
 
                     string actualUrl = config.UrlTemplate.Replace("$1", Uri.EscapeDataString(matchedText));
-                    Console.WriteLine($"[AutomationOrchestrator] Calling URL: {actualUrl}");
+                    if (config.DebugMode) Console.WriteLine($"[AutomationOrchestrator] Calling URL: {actualUrl}");
 
                     var (responseBody, httpError) = await HttpUtilityService.GetUrlContentAsync(actualUrl);
 
@@ -129,7 +129,7 @@ namespace MatchKit.Core
             {
                 result.Success = false;
                 result.Error = $"Unexpected error: {ex.Message}";
-                Console.WriteLine($"[AutomationOrchestrator] Exception caught: {ex}");
+                if (config.DebugMode) Console.WriteLine($"[AutomationOrchestrator] Exception caught: {ex}");
                 return result;
             }
         }
