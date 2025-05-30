@@ -1,5 +1,7 @@
 # MatchKit
 
+![Alt text](assets/matchkit-logo.png)
+
 A powerful Windows automation tool that extracts text from any application using UI Automation, processes it with regex patterns, optionally calls web APIs, and can paste results back into applications. Available as both a console application and a system tray application with global hotkey support.
 
 ## Features
