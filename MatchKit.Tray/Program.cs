@@ -178,11 +178,11 @@ namespace MatchKit.Tray
                 if (!operationalArgsProvided)
                 {
                     if (debugMode) AllocateDebugConsole();
-                    Console.WriteLine("No command-line arguments provided. Attempting to load from registry...");
+                    if (debugMode) Console.WriteLine("No command-line arguments provided. Attempting to load from registry...");
                     loadedConfig = ConfigurationService.LoadConfiguration();
                     if (loadedConfig != null)
                     {
-                        Console.WriteLine("Configuration loaded from registry.");
+                        if (debugMode) Console.WriteLine("Configuration loaded from registry.");
                         windowIdentifier = loadedConfig.WindowIdentifier;
                         regexPattern = loadedConfig.RegexPattern;
                         urlTemplate = loadedConfig.UrlTemplate;
@@ -203,7 +203,7 @@ namespace MatchKit.Tray
                 else
                 {
                     if (debugMode) AllocateDebugConsole();
-                    Console.WriteLine("Command-line arguments provided, overriding registry settings.");
+                    if (debugMode) Console.WriteLine("Command-line arguments provided, overriding registry settings.");
                 }
 
                 if (string.IsNullOrEmpty(windowIdentifier) || string.IsNullOrEmpty(regexPattern) || string.IsNullOrEmpty(hotkeyString))
@@ -261,7 +261,7 @@ namespace MatchKit.Tray
                         // This is a heuristic. A more robust way would be to check mutex ownership or command line args if possible.
                         if (process.MainWindowHandle == IntPtr.Zero) // Tray apps often don't have a main window handle visible this way
                         {
-                            Console.WriteLine($"Attempting to close process ID: {process.Id}");
+                            if (debugMode) Console.WriteLine($"Attempting to close process ID: {process.Id}");
                             process.Kill();
                             process.WaitForExit(5000); // Wait up to 5 seconds
                         }
