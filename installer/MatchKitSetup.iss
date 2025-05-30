@@ -23,16 +23,13 @@ AppVersion={#MyAppVersion}
 AppVerName={#MyAppName} {#MyAppVersion}
 AppPublisher={#MyAppPublisher}
 AppPublisherURL={#MyAppURL}
-AppSupportURL={#MyAppURL}
-AppUpdatesURL={#MyAppURL} ; Optional
+AppSupportURL={#MyAppURL}/support
 DefaultDirName={autopf}\{#MyAppPublisher}\{#MyAppName}
 OutputDir=output
 OutputBaseFilename=MatchKitSetup-{#MyAppVersion}
 Compression=lzma
-; SolidCompression=yes ; User commented this out in a previous diff
 PrivilegesRequired=admin
 DisableProgramGroupPage=yes
-; SetupIconFile=Input\MatchKitIcon.ico ; User commented this out
 UninstallDisplayIcon={app}\{#MyAppExeName}
 
 [Languages]
@@ -45,14 +42,12 @@ Source: "..\MatchKit.Tray\bin\{#MyAppConfiguration}\MatchKit.Core.dll"; DestDir:
 Source: "..\MatchKit.Tray\bin\{#MyAppConfiguration}\*.dll"; DestDir: "{app}"; Flags: ignoreversion
 Source: "..\MatchKit.Tray\bin\{#MyAppConfiguration}\*.config"; DestDir: "{app}"; Flags: ignoreversion
 Source: "..\MatchKit.Tray\bin\{#MyAppConfiguration}\*.pdb"; DestDir: "{app}"; Flags: ignoreversion
-; Documentation
-; Source: "..\README.md"; DestDir: "{app}"; Flags: ignoreversion isreadme;
-; Source: "..\LICENSE"; DestDir: "{app}"; DestName: "LICENSE.txt"; Flags: ignoreversion isreadme;
+Source: "input\README.txt"; DestDir: "{app}"; Flags: ignoreversion isreadme;
+
 
 [Icons]
-; Remove Start Menu shortcuts
-; Name: "{autoprograms}\{#MyAppName}\MatchKit Console"; Filename: "{app}\MatchKit.exe"
-; Name: "{autoprograms}\{#MyAppName}\MatchKit Tray"; Filename: "{app}\{#MyAppExeName}"
+Name: "{autoprograms}\{#MyAppName}\MatchKit Tray"; Filename: "{app}\{#MyAppExeName}";
+Name: "{autoprograms}\{#MyAppName}\Configure MatchKit"; Filename: "{app}\{#MyAppExeName}"; Parameters: "--config";
 
 ; Add Desktop shortcut for All Users if the task is selected
 Name: "{commondesktop}\{#MyAppName} Tray"; Filename: "{app}\{#MyAppExeName}"; Tasks: desktopicon; WorkingDir: "{app}"
