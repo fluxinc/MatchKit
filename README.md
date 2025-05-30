@@ -1,6 +1,6 @@
 # MatchKit
 
-![Alt text](assets/matchkit-logo.png)
+<img src="assets/matchkit-logo.png" alt="Alt text" width="500" style="margin: 0 auto; display: block;">
 
 A powerful Windows automation tool that extracts text from any application using UI Automation, processes it with regex patterns, optionally calls web APIs, and can paste results back into applications. Available as both a console application and a system tray application with global hotkey support.
 
@@ -85,9 +85,11 @@ Let's walk through creating a simple automation: extracting a number from Notepa
 
 **2. Find the Window Identifier:**
    If you're unsure of the window title or process name, use `MatchKit.exe` to list active windows:
+
    ```bash
    MatchKit.exe --list-windows
    ```
+
    Look for "Notepad" or "notepad.exe".
 
 **3. Test with the Console Application (`MatchKit.exe`):**
@@ -101,39 +103,50 @@ Let's walk through creating a simple automation: extracting a number from Notepa
    # Extract the number after "Order ID: "
    MatchKit.exe -w "notepad.exe" -r "Order ID: (\d+)"
    ```
+
    If it works, MatchKit will print the extracted number.
 
 **4. (Optional) Add API Call and JSON Extraction:**
    If your workflow involves an API:
+
    ```bash
    # Example: Look up the extracted ID (replace with a real API)
    MatchKit.exe -w "notepad.exe" -r "Order ID: (\d+)" -u "http://api.example.com/orders/$1" -j "orderDetails.status"
    ```
+
    Use the `-d` (debug) flag to see the full API response if you're having trouble with JSON path extraction.
 
 **5. (Optional) Save Your Configuration (using `MatchKit.exe`):**
    Once you're happy with the console command, you can save these settings to be used by `MatchKit.Tray.exe` or as defaults for `MatchKit.exe`. This requires admin privileges.
+
    ```bash
    # Save the configuration, including a hotkey for the tray app
    MatchKit.exe -w "notepad.exe" -r "Order ID: (\d+)" -u "http://api.example.com/orders/$1" -j "orderDetails.status" -k "Ctrl+Shift+N" --save
    ```
+
    Now, these settings are stored in the registry.
 
 **6. Deploy to the System Tray (`MatchKit.Tray.exe`):**
-   - If you've saved the configuration using `MatchKit.exe --save` (which included a hotkey), you can simply run `MatchKit.Tray.exe` without any arguments. It will load the saved settings and register the hotkey.
+
+- If you've saved the configuration using `MatchKit.exe --save` (which included a hotkey), you can simply run `MatchKit.Tray.exe` without any arguments. It will load the saved settings and register the hotkey.
+
      ```bash
      MatchKit.Tray.exe
      ```
-   - Alternatively, if you want to run `MatchKit.Tray.exe` with a specific, temporary configuration without saving it, or to override saved settings:
+
+- Alternatively, if you want to run `MatchKit.Tray.exe` with a specific, temporary configuration without saving it, or to override saved settings:
+
      ```bash
      MatchKit.Tray.exe -w "notepad.exe" -r "Order ID: (\d+)" -k "Ctrl+Alt+N"
      ```
+
    Now, pressing your defined hotkey (e.g., Ctrl+Shift+N or Ctrl+Alt+N) while Notepad is the active application (or any application if your window target is broad) should trigger the automation and paste the result.
 
 **7. Configure Interactively:**
    You can manage saved configurations using:
-   - `MatchKit.exe --config`: For command-line based configuration.
-   - `MatchKit.Tray.exe --config`: For a GUI-based configuration editor.
+
+- `MatchKit.exe --config`: For command-line based configuration.
+- `MatchKit.Tray.exe --config`: For a GUI-based configuration editor.
    Both require admin privileges to save changes.
 
 ## Usage
@@ -155,8 +168,8 @@ These options define the core automation task for a single execution or for a ho
 These options are used to save, load, and manage automation configurations in the Windows Registry. This allows `MatchKit.Tray.exe` to remember settings and hotkeys across sessions. Running these typically requires administrator privileges.
 
 - `-c, --config`: Interactive configuration mode.
-    - When used with `MatchKit.exe`: Starts a command-line interface to guide you through setting and saving default parameters (window, regex, URL, JSON key, hotkey) to the registry.
-    - When used with `MatchKit.Tray.exe`: Opens a graphical user interface (GUI) window that allows you to manage and save these parameters to the registry.
+  - When used with `MatchKit.exe`: Starts a command-line interface to guide you through setting and saving default parameters (window, regex, URL, JSON key, hotkey) to the registry.
+  - When used with `MatchKit.Tray.exe`: Opens a graphical user interface (GUI) window that allows you to manage and save these parameters to the registry.
 - `-s, --save` (`MatchKit.exe` only): Saves the operational command-line arguments (`-w`, `-r`, `-u`, `-j`, `-k`) provided in the same command as the new default configuration in the registry. This is useful for scripting setups or pre-configuring MatchKit.
 
 **`MatchKit.exe` (Console Application) Specific Options:**
@@ -166,20 +179,22 @@ These options are used to save, load, and manage automation configurations in th
 **`MatchKit.Tray.exe` (System Tray Application) Specific Options:**
 
 - `-k, --hotkey`: Specifies the global hotkey combination that will trigger the automation (e.g., "Ctrl+Shift+R", "Alt+F1").
-    - If `MatchKit.Tray.exe` is launched with this option, it will use the provided parameters for this session, overriding any saved configuration.
-    - If `MatchKit.Tray.exe` is launched *without* this option (and other operational arguments), it will attempt to load the configuration (including the hotkey) from the registry (previously saved using `--config` or `MatchKit.exe --save`).
-    - If no arguments are provided and no configuration is saved in the registry, the tray application may not have a default hotkey and will need to be configured.
+  - If `MatchKit.Tray.exe` is launched with this option, it will use the provided parameters for this session, overriding any saved configuration.
+  - If `MatchKit.Tray.exe` is launched *without* this option (and other operational arguments), it will attempt to load the configuration (including the hotkey) from the registry (previously saved using `--config` or `MatchKit.exe --save`).
+  - If no arguments are provided and no configuration is saved in the registry, the tray application may not have a default hotkey and will need to be configured.
 
 ### Console Application (MatchKit.exe)
 
 Command-line tool for direct automation tasks, ideal for testing configurations.
 
 #### List Available Windows
+
 ```bash
 MatchKit.exe --list-windows
 ```
 
 #### Basic Text Extraction
+
 ```bash
 # Extract a 4-digit number from Notepad
 MatchKit.exe -w "notepad" -r "\d{4}"
@@ -187,9 +202,11 @@ MatchKit.exe -w "notepad" -r "\d{4}"
 # Extract using process name and capture group
 MatchKit.exe -w "notepad.exe" -r "Invoice: (\w+)"
 ```
+
 If a value is extracted, it will be printed to the console.
 
 #### With API Integration
+
 ```bash
 # Extract text, call API, and display response field
 MatchKit.exe -w "MyApp" -r "ID: (\d+)" -u "http://api.example.com/items/$1" -j "data.name"
@@ -200,6 +217,7 @@ MatchKit.exe -w "MyApp" -r "ID: (\d+)" -u "http://api.example.com/items/$1" -j "
 Windows system tray application for hotkey-triggered automation. It runs in the background and waits for the configured hotkey.
 
 #### Basic Usage
+
 ```bash
 # Simple hotkey automation (overrides saved config for this session)
 MatchKit.Tray.exe -w "notepad" -r "\d{4}" -k "Ctrl+R"
@@ -213,13 +231,17 @@ MatchKit.Tray.exe
 ```
 
 #### Supported Hotkey Formats
+
 - Single key + modifier: `Ctrl+R`, `Alt+F1`, `Shift+A`
 - Multiple modifiers: `Ctrl+Shift+R`, `Ctrl+Alt+D`
 - Function keys: `F1` through `F12`
 - Number keys: `0` through `9`
 - Letter keys: `A` through `Z`
 
+## Real-World Examples
+
 ### Extract and Look Up Invoice Numbers
+
 ```bash
 # Console version for testing
 MatchKit.exe -w "InvoiceApp" -r "INV-(\d{6})" -u "http://erp.company.com/api/invoices/$1" -j "invoice.total"
@@ -231,7 +253,9 @@ MatchKit.Tray.exe
 ```
 
 ### Medical Report Integration (DXA/DEXA)
+
 This example shows a more complex regex and specific API endpoint.
+
 ```bash
 # Configuration to be saved using MatchKit.exe --save -k "Ctrl+T":
 # -w "PowerScribe" -r "(A\d{8,}[A-Z]{2})" -u "http://10.200.63.74:3000/en/show/exam/$1/template/5/format/text.json" -j "body"
@@ -242,9 +266,11 @@ MatchKit.Tray.exe
 # Or, to test/run directly:
 MatchKit.Tray.exe -w "PowerScribe" -r "(A\d{8,}[A-Z]{2})" -u "http://10.200.63.74:3000/en/show/exam/$1/template/5/format/text.json" -j "body" -k "Ctrl+T"
 ```
+
 The regex `(A\d{8,}[A-Z]{2})` looks for an accession number starting with 'A', followed by 8 or more digits, and ending with two uppercase letters.
 
 ### Customer ID Lookup
+
 ```bash
 # Save this config using MatchKit.exe --save -k "Alt+C":
 # -w "CRM" -r "CUST(\d+)" -u "https://api.crm.com/customers/$1" -j "customer.email"
@@ -267,15 +293,19 @@ MatchKit.Tray.exe -w "CRM" -r "CUST(\d+)" -u "https://api.crm.com/customers/$1" 
 2. **Verify Output**: Ensure you're getting the expected results in the console. Use `-d` for debug output.
 
 3. **(Optional) Save for Tray App**: If the console command works perfectly, use `MatchKit.exe` with the same operational arguments plus `--save` and your desired `-k "Hotkey"` to save it to the registry.
+
    ```bash
    MatchKit.exe -w "YourApp" -r "YourRegex" -u "YourAPI" -j "json.path" -k "Ctrl+R" --save
    ```
 
 4. **Deploy to Tray**: Run `MatchKit.Tray.exe` (ideally without arguments, to load the saved configuration). Press your hotkey to test.
+
    ```bash
    MatchKit.Tray.exe
    ```
+
    If you need to test the tray app with parameters directly (without saving), use:
+
    ```bash
    MatchKit.Tray.exe -w "YourApp" -r "YourRegex" -u "YourAPI" -j "json.path" -k "Ctrl+R"
    ```
@@ -323,7 +353,7 @@ The `-j` parameter supports standard JSON path notation:
 - Some applications may have paste restrictions
 - Try increasing the delay in code if needed
 
-## Architecture
+## Building from Source
 
 ```bash
 # Clone the repository
@@ -338,6 +368,8 @@ msbuild MatchKit.Core\MatchKit.Core.csproj
 msbuild MatchKit\MatchKit.csproj
 msbuild MatchKit.Tray\MatchKit.Tray.csproj
 ```
+
+## Architecture
 
 ```
 MatchKit.sln
