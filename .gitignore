@@ -291,3 +291,4 @@ __pycache__/
 riderModule.iml
 /_ReSharper.Caches/
 .stfolder/
+installer/output/
