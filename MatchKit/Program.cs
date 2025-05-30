@@ -17,11 +17,11 @@ namespace MatchKit
         {
             ElevationHelper.ElevateIfConfigAndNotAdmin(args);
 
-            var configOption = new Option<bool>(
+            Option<bool> configOption = new Option<bool>(
                 aliases: new[] { "--config", "-c" },
                 description: "Interactively set and save default settings to the registry.");
 
-            var saveOption = new Option<bool>(
+            Option<bool> saveOption = new Option<bool>(
                 aliases: new[] { "--save", "-s" },
                 description: "Save the provided operational arguments (window-identifier, regex-pattern, etc.) as default settings to the registry. Requires administrator privileges.");
 
@@ -83,7 +83,7 @@ namespace MatchKit
                 if (saveSettings && showConfig)
                 {
                     Console.ForegroundColor = ConsoleColor.Red;
-                    Console.Error.WriteLine("Error: --save and --config options are mutually exclusive.");
+                    await Console.Error.WriteLineAsync("Error: --save and --config options are mutually exclusive.");
                     Console.ResetColor();
                     context.ExitCode = 1;
                     return;
@@ -94,8 +94,8 @@ namespace MatchKit
                     if (!ElevationHelper.IsAdmin())
                     {
                         Console.ForegroundColor = ConsoleColor.Red;
-                        Console.Error.WriteLine("Error: Administrator privileges are required to save configuration with --save.");
-                        Console.Error.WriteLine("Please re-run with --save as an administrator.");
+                        await Console.Error.WriteLineAsync("Error: Administrator privileges are required to save configuration with --save.");
+                        await Console.Error.WriteLineAsync("Please re-run with --save as an administrator.");
                         Console.ResetColor();
                         context.ExitCode = 1;
                         return;
@@ -152,8 +152,8 @@ namespace MatchKit
                     if (!ElevationHelper.IsAdmin())
                     {
                         Console.ForegroundColor = ConsoleColor.Red;
-                        Console.Error.WriteLine("Error: Administrator privileges are required to save configuration.");
-                        Console.Error.WriteLine("Please re-run with --config as an administrator.");
+                        await Console.Error.WriteLineAsync("Error: Administrator privileges are required to save configuration.");
+                        await Console.Error.WriteLineAsync("Please re-run with --config as an administrator.");
                         Console.ResetColor();
                         context.ExitCode = 1;
                         return;
@@ -194,7 +194,7 @@ namespace MatchKit
                     if (string.IsNullOrWhiteSpace(newConfig.WindowIdentifier) || string.IsNullOrWhiteSpace(newConfig.RegexPattern))
                     {
                         Console.ForegroundColor = ConsoleColor.Red;
-                        Console.Error.WriteLine("Error: Window Identifier and Regex Pattern are required.");
+                        await Console.Error.WriteLineAsync("Error: Window Identifier and Regex Pattern are required.");
                         Console.ResetColor();
                         context.ExitCode = 1;
                         return;
@@ -210,14 +210,13 @@ namespace MatchKit
                     catch (Exception ex)
                     {
                         Console.ForegroundColor = ConsoleColor.Red;
-                        Console.Error.WriteLine($"Error saving configuration: {ex.Message}");
+                        await Console.Error.WriteLineAsync($"Error saving configuration: {ex.Message}");
                         Console.ResetColor();
                         context.ExitCode = 1;
                     }
                     return;
                 }
 
-                ConfigData loadedConfig = null;
                 bool operationalArgsProvided = false;
                 if (originalArgs.Length > 0)
                 {
@@ -241,7 +240,7 @@ namespace MatchKit
                 if (!operationalArgsProvided && !listWindows)
                 {
                     if (debugEnabled) Console.WriteLine("[MatchKit] No command-line arguments. Attempting to load from registry...");
-                    loadedConfig = ConfigurationService.LoadConfiguration();
+                    ConfigData loadedConfig = ConfigurationService.LoadConfiguration();
                     if (loadedConfig != null)
                     {
                         if (debugEnabled) Console.WriteLine("[MatchKit] Configuration loaded from registry.");
@@ -253,8 +252,8 @@ namespace MatchKit
                     else
                     {
                         Console.ForegroundColor = ConsoleColor.Red;
-                        Console.Error.WriteLine("Error: No configuration found in registry and no arguments provided.");
-                        Console.Error.WriteLine("Please run with --config to set defaults, or provide command-line arguments, or use --list-windows.");
+                        await Console.Error.WriteLineAsync("Error: No configuration found in registry and no arguments provided.");
+                        await Console.Error.WriteLineAsync("Please run with --config to set defaults, or provide command-line arguments, or use --list-windows.");
                         Console.ResetColor();
                         await rootCommand.InvokeAsync("--help");
                         context.ExitCode = 1;
@@ -266,7 +265,7 @@ namespace MatchKit
                     if (debugEnabled) Console.WriteLine("[MatchKit] Command-line arguments provided, overriding registry settings.");
                 }
 
-                var orchestrator = new AutomationOrchestrator(debugEnabled);
+                AutomationOrchestrator orchestrator = new AutomationOrchestrator(debugEnabled);
 
                 if (listWindows)
                 {
@@ -278,14 +277,14 @@ namespace MatchKit
                     if (string.IsNullOrEmpty(windowIdentifier) || string.IsNullOrEmpty(regexPattern))
                     {
                         Console.ForegroundColor = ConsoleColor.Red;
-                        Console.Error.WriteLine("Error: --window-identifier (-w) and --regex-pattern (-r) are required when --list-windows (-l) is not used and no registry config is found.");
+                        await Console.Error.WriteLineAsync("Error: --window-identifier (-w) and --regex-pattern (-r) are required when --list-windows (-l) is not used and no registry config is found.");
                         Console.ResetColor();
                         await rootCommand.InvokeAsync("--help");
                         context.ExitCode = 1;
                         return;
                     }
 
-                    var autoConfig = new AutomationOrchestrator.AutomationConfig
+                    AutomationOrchestrator.AutomationConfig autoConfig = new AutomationOrchestrator.AutomationConfig
                     {
                         WindowIdentifier = windowIdentifier,
                         RegexPattern = regexPattern,
@@ -294,12 +293,12 @@ namespace MatchKit
                         DebugMode = debugEnabled
                     };
 
-                    var result = await orchestrator.ExecuteAsync(autoConfig);
+                    AutomationOrchestrator.AutomationResult result = await orchestrator.ExecuteAsync(autoConfig);
 
                     if (!result.Success)
                     {
                         Console.ForegroundColor = ConsoleColor.Red;
-                        Console.Error.WriteLine($"Error: {result.Error}");
+                        await Console.Error.WriteLineAsync($"Error: {result.Error}");
                         Console.ResetColor();
                         context.ExitCode = 1;
                     }

@@ -22,21 +22,20 @@ namespace MatchKit.Core
             try
             {
                 // Explicitly use the 32-bit view of HKLM to ensure Wow6432Node is used on 64-bit systems
-                using (RegistryKey hklmBase = RegistryKey.OpenBaseKey(RegistryHive.LocalMachine, RegistryView.Registry32))
-                using (RegistryKey key = hklmBase.CreateSubKey(RegistryPath))
+                using RegistryKey hklmBase = RegistryKey.OpenBaseKey(RegistryHive.LocalMachine, RegistryView.Registry32);
+                using RegistryKey key = hklmBase.CreateSubKey(RegistryPath);
+                
+                if (key != null)
                 {
-                    if (key != null)
-                    {
-                        key.SetValue("WindowIdentifier", data.WindowIdentifier ?? "");
-                        key.SetValue("RegexPattern", data.RegexPattern ?? "");
-                        key.SetValue("UrlTemplate", data.UrlTemplate ?? "");
-                        key.SetValue("JsonKey", data.JsonKey ?? "");
-                        key.SetValue("Hotkey", data.Hotkey ?? "Ctrl+D");
-                    }
-                    else
-                    {
-                        throw new Exception("Failed to create or open registry key under HKLM (32-bit view). Ensure the application has administrator privileges if using HKEY_LOCAL_MACHINE.");
-                    }
+                    key.SetValue("WindowIdentifier", data.WindowIdentifier ?? "");
+                    key.SetValue("RegexPattern", data.RegexPattern ?? "");
+                    key.SetValue("UrlTemplate", data.UrlTemplate ?? "");
+                    key.SetValue("JsonKey", data.JsonKey ?? "");
+                    key.SetValue("Hotkey", data.Hotkey ?? "Ctrl+D");
+                }
+                else
+                {
+                    throw new Exception("Failed to create or open registry key under HKLM (32-bit view). Ensure the application has administrator privileges if using HKEY_LOCAL_MACHINE.");
                 }
             }
             catch (Exception ex)
@@ -51,20 +50,18 @@ namespace MatchKit.Core
             try
             {
                 // Explicitly use the 32-bit view of HKLM to ensure Wow6432Node is used on 64-bit systems
-                using (RegistryKey hklmBase = RegistryKey.OpenBaseKey(RegistryHive.LocalMachine, RegistryView.Registry32))
-                using (RegistryKey key = hklmBase.OpenSubKey(RegistryPath, writable: false)) // Open for read-only
+                using RegistryKey hklmBase = RegistryKey.OpenBaseKey(RegistryHive.LocalMachine, RegistryView.Registry32);
+                using RegistryKey key = hklmBase.OpenSubKey(RegistryPath, writable: false);
+                if (key != null)
                 {
-                    if (key != null)
+                    return new ConfigData
                     {
-                        return new ConfigData
-                        {
-                            WindowIdentifier = key.GetValue("WindowIdentifier") as string,
-                            RegexPattern = key.GetValue("RegexPattern") as string,
-                            UrlTemplate = key.GetValue("UrlTemplate") as string,
-                            JsonKey = key.GetValue("JsonKey") as string,
-                            Hotkey = key.GetValue("Hotkey") as string ?? "Ctrl+D"
-                        };
-                    }
+                        WindowIdentifier = key.GetValue("WindowIdentifier") as string,
+                        RegexPattern = key.GetValue("RegexPattern") as string,
+                        UrlTemplate = key.GetValue("UrlTemplate") as string,
+                        JsonKey = key.GetValue("JsonKey") as string,
+                        Hotkey = key.GetValue("Hotkey") as string ?? "Ctrl+D"
+                    };
                 }
             }
             catch (System.Security.SecurityException secEx)

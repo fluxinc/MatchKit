@@ -103,7 +103,7 @@ namespace MatchKit.Tray
                 Text = "MatchKit.Tray - Press " + hotkeyStringForDisplay
             };
 
-            var contextMenu = new ContextMenuStrip();
+            ContextMenuStrip contextMenu = new ContextMenuStrip();
 
             contextMenu.Items.Add("Show Configuration", null, ShowConfiguration);
             contextMenu.Items.Add("Test Automation", null, async (s, e) => await ExecuteAutomation());
@@ -116,7 +116,7 @@ namespace MatchKit.Tray
 
         private void RegisterHotkey()
         {
-            var hotkeyForm = new HotkeyForm(async () => await ExecuteAutomation(), _hotkeyEnumInternal, LogThreadInfo);
+            HotkeyForm hotkeyForm = new HotkeyForm(async () => await ExecuteAutomation(), _hotkeyEnumInternal, LogThreadInfo);
             hotkeyForm.Show();
             hotkeyForm.Hide();
             _hiddenForm = hotkeyForm;
@@ -124,12 +124,12 @@ namespace MatchKit.Tray
 
         private string GetHotkeyDisplay()
         {
-            var display = "";
+            string display = "";
             if ((_hotkeyEnumInternal & Keys.Control) == Keys.Control) display += "Ctrl+";
             if ((_hotkeyEnumInternal & Keys.Alt) == Keys.Alt) display += "Alt+";
             if ((_hotkeyEnumInternal & Keys.Shift) == Keys.Shift) display += "Shift+";
 
-            var key = _hotkeyEnumInternal & ~Keys.Control & ~Keys.Alt & ~Keys.Shift;
+            Keys key = _hotkeyEnumInternal & ~Keys.Control & ~Keys.Alt & ~Keys.Shift;
             display += key.ToString();
 
             return display;
@@ -137,13 +137,13 @@ namespace MatchKit.Tray
 
         private void ShowConfiguration(object sender, EventArgs e)
         {
-            var message = $"MatchKit.Tray Configuration:\n\n" +
-                          $"Window: {_config.WindowIdentifier}\n" +
-                          $"Regex: {_config.RegexPattern}\n" +
-                          $"URL: {_config.UrlTemplate ?? "(none)"}\n" +
-                          $"JSON Key: {_config.JsonKey ?? "(none)"}\n" +
-                          $"Hotkey: {GetHotkeyDisplay()}\n" +
-                          $"Debug Mode: {(_config.DebugMode ? "Enabled" : "Disabled")}";
+            string message = $"MatchKit.Tray Configuration:\n\n" +
+                             $"Window: {_config.WindowIdentifier}\n" +
+                             $"Regex: {_config.RegexPattern}\n" +
+                             $"URL: {_config.UrlTemplate ?? "(none)"}\n" +
+                             $"JSON Key: {_config.JsonKey ?? "(none)"}\n" +
+                             $"Hotkey: {GetHotkeyDisplay()}\n" +
+                             $"Debug Mode: {(_config.DebugMode ? "Enabled" : "Disabled")}";
 
             MessageBox.Show(message, "MatchKit.Tray Configuration",
                 MessageBoxButtons.OK, MessageBoxIcon.Information);
@@ -155,7 +155,7 @@ namespace MatchKit.Tray
 
             try
             {
-                var result = await _orchestrator.ExecuteAsync(_config);
+                AutomationOrchestrator.AutomationResult result = await _orchestrator.ExecuteAsync(_config);
 
                 LogThreadInfo("[ExecuteAutomation] After await _orchestrator.ExecuteAsync");
 

@@ -30,31 +30,29 @@ namespace MatchKit.Core
                 a.Equals("--save", StringComparison.OrdinalIgnoreCase) || a.Equals("-s", StringComparison.OrdinalIgnoreCase)
             );
 
-            if (isConfigMode && !IsAdmin())
+            if (!isConfigMode || IsAdmin()) return;
+            try
             {
-                try
+                ProcessStartInfo startInfo = new ProcessStartInfo
                 {
-                    ProcessStartInfo startInfo = new ProcessStartInfo
-                    {
-                        // Use Location, which gives the path to the DLL/EXE.
-                        FileName = Assembly.GetEntryAssembly().Location,
-                        UseShellExecute = true,
-                        Verb = "runas",
-                        Arguments = string.Join(" ", args)
-                    };
-                    Process.Start(startInfo);
-                    Environment.Exit(0); // Exit current non-elevated process
-                }
-                catch (System.ComponentModel.Win32Exception ex) when (ex.NativeErrorCode == 1223) // ERROR_CANCELLED
-                {
-                    Console.Error.WriteLine("Administrator privileges are required for configuration. Elevation was cancelled by the user.");
-                    Environment.Exit(1); // Exit if elevation was cancelled
-                }
-                catch (Exception ex)
-                {
-                    Console.Error.WriteLine($"Unable to restart with administrator rights for configuration: {ex.Message}");
-                    Environment.Exit(1); // Exit if elevation failed
-                }
+                    // Use Location, which gives the path to the DLL/EXE.
+                    FileName = Assembly.GetEntryAssembly().Location,
+                    UseShellExecute = true,
+                    Verb = "runas",
+                    Arguments = string.Join(" ", args)
+                };
+                Process.Start(startInfo);
+                Environment.Exit(0); // Exit current non-elevated process
+            }
+            catch (System.ComponentModel.Win32Exception ex) when (ex.NativeErrorCode == 1223) // ERROR_CANCELLED
+            {
+                Console.Error.WriteLine("Administrator privileges are required for configuration. Elevation was cancelled by the user.");
+                Environment.Exit(1); // Exit if elevation was cancelled
+            }
+            catch (Exception ex)
+            {
+                Console.Error.WriteLine($"Unable to restart with administrator rights for configuration: {ex.Message}");
+                Environment.Exit(1); // Exit if elevation failed
             }
         }
     }

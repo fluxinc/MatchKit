@@ -12,7 +12,7 @@ namespace MatchKit.Core
     {
         public static bool DebugMode { get; set; } = false;
 
-        public AutomationElement FindWindow(string identifier)
+        private AutomationElement FindWindow(string identifier)
         {
             if (DebugMode) Console.WriteLine($"[CoreSvc] Attempting to find window with identifier: `{identifier}`");
 
@@ -21,14 +21,13 @@ namespace MatchKit.Core
             {
                 try
                 {
-                    if (windowElement != null && !string.IsNullOrEmpty(windowElement.Current.Name) && !windowElement.Current.IsOffscreen)
-                    {
-                        if (Regex.IsMatch(windowElement.Current.Name, identifier, RegexOptions.IgnoreCase))
-                        {
-                            if (DebugMode) Console.WriteLine($"[CoreSvc] Found window by title regex: {windowElement.Current.Name}");
-                            return windowElement;
-                        }
-                    }
+                    if (windowElement == null || string.IsNullOrEmpty(windowElement.Current.Name) ||
+                        windowElement.Current.IsOffscreen)
+                        continue;
+                    if (!Regex.IsMatch(windowElement.Current.Name, identifier, RegexOptions.IgnoreCase)) 
+                        continue;
+                    if (DebugMode) Console.WriteLine($"[CoreSvc] Found window by title regex: {windowElement.Current.Name}");
+                    return windowElement;
                 }
                 catch (ElementNotAvailableException)
                 {
@@ -50,15 +49,13 @@ namespace MatchKit.Core
                 {
                     foreach (Process p in processes)
                     {
-                        if (p.MainWindowHandle != IntPtr.Zero)
-                        {
-                            AutomationElement window = AutomationElement.FromHandle(p.MainWindowHandle);
-                            if (window != null && !string.IsNullOrEmpty(window.Current.Name))
-                            {
-                                if (DebugMode) Console.WriteLine($"[CoreSvc] Found window by process name: {window.Current.Name} (PID: {p.Id})");
-                                return window;
-                            }
-                        }
+                        if (p.MainWindowHandle == IntPtr.Zero) continue;
+                        
+                        AutomationElement window = AutomationElement.FromHandle(p.MainWindowHandle);
+                        if (window == null || string.IsNullOrEmpty(window.Current.Name)) continue;
+                        
+                        if (DebugMode) Console.WriteLine($"[CoreSvc] Found window by process name: {window.Current.Name} (PID: {p.Id})");
+                        return window;
                     }
                 }
             }
@@ -70,7 +67,7 @@ namespace MatchKit.Core
             return null;
         }
 
-        public string GetTextFromElement(AutomationElement element)
+        private static string GetTextFromElement(AutomationElement element)
         {
             if (element == null)
             {
@@ -181,11 +178,9 @@ namespace MatchKit.Core
                     if (DebugMode) Console.WriteLine("[CoreSvc] Match found: " + result);
                     return (result, null);
                 }
-                else
-                {
-                    if (DebugMode) Console.WriteLine("[CoreSvc] No match found.");
-                    return (null, "No match found.");
-                }
+
+                if (DebugMode) Console.WriteLine("[CoreSvc] No match found.");
+                return (null, "No match found.");
             }
             catch (Exception ex)
             {
@@ -203,33 +198,29 @@ namespace MatchKit.Core
             {
                 try
                 {
-                    if (!string.IsNullOrEmpty(window.Current.Name) && !window.Current.IsOffscreen)
+                    if (string.IsNullOrEmpty(window.Current.Name) || window.Current.IsOffscreen) 
+                        continue;
+                    
+                    int processId = window.Current.ProcessId;
+                    string windowTitle = window.Current.Name;
+                    string processName = "N/A";
+                    try
                     {
-                        int processId = window.Current.ProcessId;
-                        string windowTitle = window.Current.Name;
-                        string processName = "N/A";
-                        try
-                        {
-                            Process process = Process.GetProcessById(processId);
-                            processName = process.ProcessName;
-                        }
-                        catch (ArgumentException)
-                        {
-                            processName = "Process Exited";
-                        }
-                        if (DebugMode) Console.WriteLine($"Title: {windowTitle} - Process: {processName} (ID: {processId})");
+                        Process process = Process.GetProcessById(processId);
+                        processName = process.ProcessName;
                     }
+                    catch (ArgumentException)
+                    {
+                        processName = "Process Exited";
+                    }
+                    if (DebugMode) Console.WriteLine($"Title: {windowTitle} - Process: {processName} (ID: {processId})");
                 }
                 catch (ElementNotAvailableException) { continue; }
                 catch (Exception ex)
                 {
                     if (DebugMode) Console.WriteLine($"[CoreSvc] Error listing window: {ex.Message}");
-                    continue;
                 }
             }
         }
-
-        // Helper method for UI Automation.
-        // This might be better placed in a utility class or as part of a more specific service if MatchKit.Core grows more features.
     }
 }

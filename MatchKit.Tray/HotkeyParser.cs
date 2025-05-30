@@ -85,7 +85,7 @@ namespace MatchKit.Tray
             }
 
             // Validate that we have at least one non-modifier key
-            var nonModifierKeys = result & ~(Keys.Control | Keys.Alt | Keys.Shift | Keys.LWin);
+            Keys nonModifierKeys = result & ~(Keys.Control | Keys.Alt | Keys.Shift | Keys.LWin);
             if (nonModifierKeys == Keys.None)
             {
                 throw new ArgumentException("Hotkey must include at least one non-modifier key");
