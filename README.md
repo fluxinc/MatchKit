@@ -13,6 +13,17 @@ A powerful Windows automation tool that extracts text from any application using
 - **Debug Mode**: Detailed logging for troubleshooting
 - **Persistent Configuration**: Save and load automation settings
 
+## Core Workflow Visualized
+
+Here's a simplified visual representation of how MatchKit processes information:
+
+```mermaid
+graph TB
+    A["UI &quot;Invoice: INV123&quot;"] -- REGEX &quot;(INV\\d+)&quot; --> B("&quot;INV123&quot;");
+    B -- URL &quot;api.com/invoice/$1&quot; --> C["GET &quot;api.com/invoice/INV12345&quot;"];
+    C -- JSON-KEY &quot;invoice.total&quot; --> E("&quot;$1,235.00&quot;");
+```
+
 ## Who is MatchKit For?
 
 MatchKit is designed for a variety of users who need to automate repetitive tasks involving text extraction and processing on Windows:
