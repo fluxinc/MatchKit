@@ -1,16 +1,10 @@
 using System;
-using System.Linq; // Potentially used by System.CommandLine or future extensions
+using System.Linq;
 using System.CommandLine;
-using System.CommandLine.Invocation; // Added for InvocationContext
+using System.CommandLine.Invocation;
 using System.Threading.Tasks;
-using System.Threading; // Added for Mutex
-// Remove using System.Net.Http; // No longer needed here
-// Remove using System.Diagnostics; // If only used by removed Process.GetProcessesByName
-// Remove using System.Windows.Automation; // Will be handled by MatchKit.Core
-// Remove using System.Text.RegularExpressions; // Will be handled by MatchKit.Core
-// Remove using System.Runtime.InteropServices; // If all P/Invokes are gone
-// Remove using System.Windows.Forms; // If only used for hotkeys
-using MatchKit.Core; // For TextAutomationService, HttpUtilityService, and ElevationHelper
+using System.Threading;
+using MatchKit.Core;
 
 namespace MatchKit
 {
@@ -18,10 +12,6 @@ namespace MatchKit
     {
         private static Mutex _configMutex = null;
         private const string ConfigMutexName = "Global\\MatchKitConsoleConfigMutex";
-
-        // All P/Invoke declarations for global hotkey, message loop structures (MSG, POINT),
-        // and related constants (HOTKEY_ID, MOD_*, WM_HOTKEY, ERROR_*) are removed.
-        // s_hotkeyAction is removed.
 
         public static async Task<int> Main(string[] args)
         {
@@ -76,7 +66,7 @@ namespace MatchKit
             rootCommand.AddOption(jsonKeyOption);
             rootCommand.AddOption(hotkeyOption);
 
-            string[] originalArgs = (string[])args.Clone(); // For checking if any args were passed
+            string[] originalArgs = (string[])args.Clone();
 
             rootCommand.SetHandler(async (InvocationContext context) =>
             {
@@ -93,7 +83,7 @@ namespace MatchKit
                 if (saveSettings && showConfig)
                 {
                     Console.ForegroundColor = ConsoleColor.Red;
-                    Console.WriteLine("Error: --save and --config options are mutually exclusive.");
+                    Console.Error.WriteLine("Error: --save and --config options are mutually exclusive.");
                     Console.ResetColor();
                     context.ExitCode = 1;
                     return;
@@ -104,18 +94,17 @@ namespace MatchKit
                     if (!ElevationHelper.IsAdmin())
                     {
                         Console.ForegroundColor = ConsoleColor.Red;
-                        Console.WriteLine("Error: Administrator privileges are required to save configuration with --save.");
-                        Console.WriteLine("Please re-run with --save as an administrator.");
+                        Console.Error.WriteLine("Error: Administrator privileges are required to save configuration with --save.");
+                        Console.Error.WriteLine("Please re-run with --save as an administrator.");
                         Console.ResetColor();
                         context.ExitCode = 1;
                         return;
                     }
 
-                    // Use the already parsed values: windowIdentifier, regexPattern, urlTemplate, jsonKey
                     if (string.IsNullOrWhiteSpace(windowIdentifier) || string.IsNullOrWhiteSpace(regexPattern))
                     {
                         Console.ForegroundColor = ConsoleColor.Red;
-                        Console.WriteLine("Error: --window-identifier (-w) and --regex-pattern (-r) are required when using --save.");
+                        Console.Error.WriteLine("Error: --window-identifier (-w) and --regex-pattern (-r) are required when using --save.");
                         Console.ResetColor();
                         context.ExitCode = 1;
                         return;
@@ -132,7 +121,7 @@ namespace MatchKit
                         hotkeyToSave = currentConfigForHotkey?.Hotkey ?? "Ctrl+D";
                     }
 
-                    ConfigData newConfig = new ConfigData
+                    ConfigData configToSave = new ConfigData
                     {
                         WindowIdentifier = windowIdentifier,
                         RegexPattern = regexPattern,
@@ -143,7 +132,7 @@ namespace MatchKit
 
                     try
                     {
-                        ConfigurationService.SaveConfiguration(newConfig);
+                        ConfigurationService.SaveConfiguration(configToSave);
                         Console.ForegroundColor = ConsoleColor.Green;
                         Console.WriteLine("Configuration saved successfully from command-line arguments to the registry.");
                         Console.ResetColor();
@@ -151,22 +140,20 @@ namespace MatchKit
                     catch (Exception ex)
                     {
                         Console.ForegroundColor = ConsoleColor.Red;
-                        Console.WriteLine($"Error saving configuration: {ex.Message}");
+                        Console.Error.WriteLine($"Error saving configuration: {ex.Message}");
                         Console.ResetColor();
                         context.ExitCode = 1;
                     }
-                    return; // Exit after saving
+                    return;
                 }
 
                 if (showConfig)
                 {
                     if (!ElevationHelper.IsAdmin())
                     {
-                        // This part should ideally not be reached if ElevateIfConfigAndNotAdmin works correctly,
-                        // but as a fallback or if elevation was denied and the app didn't exit.
                         Console.ForegroundColor = ConsoleColor.Red;
-                        Console.WriteLine("Error: Administrator privileges are required to save configuration.");
-                        Console.WriteLine("Please re-run with --config as an administrator.");
+                        Console.Error.WriteLine("Error: Administrator privileges are required to save configuration.");
+                        Console.Error.WriteLine("Please re-run with --config as an administrator.");
                         Console.ResetColor();
                         context.ExitCode = 1;
                         return;
@@ -181,7 +168,7 @@ namespace MatchKit
                         Console.WriteLine("Please close the other instance and try again.");
                         Console.ResetColor();
                         context.ExitCode = 1;
-                        return; // Exit if another config instance is running
+                        return;
                     }
 
                     Console.WriteLine("Interactive Configuration Mode (Administrator):");
@@ -199,7 +186,6 @@ namespace MatchKit
                     Console.Write("Enter JSON Key for response (optional, e.g., data.value): ");
                     newConfig.JsonKey = Console.ReadLine();
 
-                    // For console app, hotkey is not directly used, but we save it for tray app consistency.
                     string hotkeyPromptDefault = !string.IsNullOrWhiteSpace(hotkeyCliValue) ? hotkeyCliValue : "Ctrl+D";
                     Console.Write($"Enter Hotkey for Tray App (e.g., Ctrl+D, optional, default: {hotkeyPromptDefault}): ");
                     string hotkeyInput = Console.ReadLine();
@@ -208,7 +194,7 @@ namespace MatchKit
                     if (string.IsNullOrWhiteSpace(newConfig.WindowIdentifier) || string.IsNullOrWhiteSpace(newConfig.RegexPattern))
                     {
                         Console.ForegroundColor = ConsoleColor.Red;
-                        Console.WriteLine("Error: Window Identifier and Regex Pattern are required.");
+                        Console.Error.WriteLine("Error: Window Identifier and Regex Pattern are required.");
                         Console.ResetColor();
                         context.ExitCode = 1;
                         return;
@@ -224,7 +210,7 @@ namespace MatchKit
                     catch (Exception ex)
                     {
                         Console.ForegroundColor = ConsoleColor.Red;
-                        Console.WriteLine($"Error saving configuration: {ex.Message}");
+                        Console.Error.WriteLine($"Error saving configuration: {ex.Message}");
                         Console.ResetColor();
                         context.ExitCode = 1;
                     }
@@ -246,13 +232,13 @@ namespace MatchKit
                      if (!operationalArgsProvided &&
                         (context.ParseResult.GetValueForOption(windowIdentifierOption) != null ||
                          context.ParseResult.GetValueForOption(regexPatternOption) != null ||
-                         listWindows )) // listWindows itself is an operational arg
+                         listWindows ))
                     {
                         operationalArgsProvided = true;
                     }
                 }
 
-                if (!operationalArgsProvided && !listWindows) // If no operational args AND not listing windows, try registry
+                if (!operationalArgsProvided && !listWindows)
                 {
                     if (debugEnabled) Console.WriteLine("[MatchKit] No command-line arguments. Attempting to load from registry...");
                     loadedConfig = ConfigurationService.LoadConfiguration();
@@ -263,17 +249,13 @@ namespace MatchKit
                         regexPattern = loadedConfig.RegexPattern;
                         urlTemplate = loadedConfig.UrlTemplate;
                         jsonKey = loadedConfig.JsonKey;
-                        // hotkeyCliValue is already parsed but not used for operational logic unless saving/configuring
-                        // debugEnabled could be loaded too if stored
-                        // Hotkey is not used by console app directly but is loaded
                     }
                     else
                     {
                         Console.ForegroundColor = ConsoleColor.Red;
-                        Console.WriteLine("Error: No configuration found in registry and no arguments provided.");
-                        Console.WriteLine("Please run with --config to set defaults, or provide command-line arguments, or use --list-windows.");
+                        Console.Error.WriteLine("Error: No configuration found in registry and no arguments provided.");
+                        Console.Error.WriteLine("Please run with --config to set defaults, or provide command-line arguments, or use --list-windows.");
                         Console.ResetColor();
-                        // Show help by invoking the command with --help
                         await rootCommand.InvokeAsync("--help");
                         context.ExitCode = 1;
                         return;
@@ -296,13 +278,14 @@ namespace MatchKit
                     if (string.IsNullOrEmpty(windowIdentifier) || string.IsNullOrEmpty(regexPattern))
                     {
                         Console.ForegroundColor = ConsoleColor.Red;
-                        Console.WriteLine("Error: --window-identifier (-w) and --regex-pattern (-r) are required when --list-windows (-l) is not used and no registry config is found.");
+                        Console.Error.WriteLine("Error: --window-identifier (-w) and --regex-pattern (-r) are required when --list-windows (-l) is not used and no registry config is found.");
                         Console.ResetColor();
-                        context.ExitCode = 1; // Set exit code for handler
+                        await rootCommand.InvokeAsync("--help");
+                        context.ExitCode = 1;
                         return;
                     }
 
-                    var config = new AutomationOrchestrator.AutomationConfig
+                    var autoConfig = new AutomationOrchestrator.AutomationConfig
                     {
                         WindowIdentifier = windowIdentifier,
                         RegexPattern = regexPattern,
@@ -311,13 +294,14 @@ namespace MatchKit
                         DebugMode = debugEnabled
                     };
 
-                    var result = await orchestrator.ExecuteAsync(config);
+                    var result = await orchestrator.ExecuteAsync(autoConfig);
 
                     if (!result.Success)
                     {
                         Console.ForegroundColor = ConsoleColor.Red;
-                        Console.WriteLine($"Error: {result.Error}");
+                        Console.Error.WriteLine($"Error: {result.Error}");
                         Console.ResetColor();
+                        context.ExitCode = 1;
                     }
                     else
                     {
@@ -348,14 +332,7 @@ namespace MatchKit
             {
                 _configMutex?.ReleaseMutex();
                 _configMutex?.Dispose();
-                // Cleanup, if any.
             }
         }
-
-        // Old ListWindows() method removed.
-        // Old ProcessWindowAsync() method removed.
-        // Old FindWindow() method removed.
-        // Old GetTextFromElement() method removed.
-        // Old ParseHotkey() method removed.
     }
 }

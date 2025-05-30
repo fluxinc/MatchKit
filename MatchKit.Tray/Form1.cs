@@ -89,7 +89,7 @@ namespace MatchKit.Tray
             }
             catch (Exception ex)
             {
-                Debug.WriteLine(ex.ToString());
+                // Debug.WriteLine(ex.ToString()); // Removed for less noise
             }
         }
 
@@ -97,8 +97,6 @@ namespace MatchKit.Tray
         {
             base.WndProc(ref m);
 
-            if (m.Msg == WM_HOTKEY)
-                throw new Exception("You found an Easter Egg.");
         }
     }
 
