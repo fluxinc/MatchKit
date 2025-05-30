@@ -2,281 +2,132 @@ MatchKit - Post-Installation Guide
 
 ## Getting Started: Your First Automation
 
-Let's walk through creating a simple automation: extracting a number from Notepad and displaying it.
+Create a simple automation: extract a number from Notepad.
 
-**1. Identify Your Target Application and Text:**
-   Open Notepad and type some text, for example: "Order ID: 12345"
+**1. Prepare Target:**
+   Open Notepad. Type: "Order ID: 12345"
 
-**2. Find the Window Identifier:**
-   If you're unsure of the window title or process name, use `MatchKit.exe` to list active windows:
-
-   ```bash
-   MatchKit.exe --list-windows
-   ```
-
+**2. Find Window Identifier:**
+   If unsure of window title or process name, use `MatchKit.exe --list-windows`.
    Look for "Notepad" or "notepad.exe".
 
-**3. Test with the Console Application (`MatchKit.exe`):**
-   This is the most crucial step for building and testing your automation.
-   Let's say you want to extract the "12345". The regex for one or more digits is `\d+`. If you specifically want it after "Order ID: ", the regex could be `Order ID: (\d+)`. The parentheses `()` create a capture group, so `$1` will refer to the number itself.
+**3. Test with Console (`MatchKit.exe`):**
+   To extract "12345" (digits `\d+`) after "Order ID: ", use regex `Order ID: (\d+)`.
+   `()` creates a capture group; `$1` refers to the number.
 
    ```bash
-   # Extract any 4-digit number from Notepad (using process name)
+   # Extract any 4-digit number (using process name)
    MatchKit.exe -w "notepad.exe" -r "\d{4}"
 
-   # Extract the number after "Order ID: "
+   # Extract number after "Order ID: "
    MatchKit.exe -w "notepad.exe" -r "Order ID: (\d+)"
    ```
+   MatchKit prints the extracted number if successful.
 
-   If it works, MatchKit will print the extracted number.
-
-**4. (Optional) Add API Call and JSON Extraction:**
-   If your workflow involves an API:
-
+**4. (Optional) API Call & JSON Extraction:**
    ```bash
-   # Example: Look up the extracted ID (replace with a real API)
    MatchKit.exe -w "notepad.exe" -r "Order ID: (\d+)" -u "http://api.example.com/orders/$1" -j "orderDetails.status"
    ```
+   Use `-d` (debug) to see the full API response for JSON path troubleshooting.
 
-   Use the `-d` (debug) flag to see the full API response if you're having trouble with JSON path extraction.
-
-**5. (Optional) Save Your Configuration (using `MatchKit.exe`):**
-   Once you're happy with the console command, you can save these settings to be used by `MatchKit.Tray.exe` or as defaults for `MatchKit.exe`. This requires admin privileges.
-
+**5. (Optional) Save Configuration (`MatchKit.exe`):**
+   Save settings for `MatchKit.Tray.exe` or `MatchKit.exe` defaults (requires admin):
    ```bash
-   # Save the configuration, including a hotkey for the tray app
    MatchKit.exe -w "notepad.exe" -r "Order ID: (\d+)" -u "http://api.example.com/orders/$1" -j "orderDetails.status" -k "Ctrl+Shift+N" --save
    ```
+   Settings are stored in the registry.
 
-   Now, these settings are stored in the registry.
-
-**6. Deploy to the System Tray (`MatchKit.Tray.exe`):**
-
-- If you've saved the configuration using `MatchKit.exe --save` (which included a hotkey), you can simply run `MatchKit.Tray.exe` without any arguments. It will load the saved settings and register the hotkey.
-
+**6. Use System Tray (`MatchKit.Tray.exe`):**
+   - If configuration (including hotkey) was saved with `MatchKit.exe --save`:
      ```bash
      MatchKit.Tray.exe
      ```
-
-- Alternatively, if you want to run `MatchKit.Tray.exe` with a specific, temporary configuration without saving it, or to override saved settings:
-
+     The tray app loads saved settings and registers the hotkey.
+   - To run `MatchKit.Tray.exe` with a temporary configuration:
      ```bash
      MatchKit.Tray.exe -w "notepad.exe" -r "Order ID: (\d+)" -k "Ctrl+Alt+N"
      ```
-
-   Now, pressing your defined hotkey (e.g., Ctrl+Shift+N or Ctrl+Alt+N) while Notepad is the active application (or any application if your window target is broad) should trigger the automation and paste the result.
+   Press the hotkey (e.g., Ctrl+Shift+N) to trigger automation and paste.
 
 **7. Configure Interactively:**
-   You can manage saved configurations using:
+   Manage saved configurations (requires admin):
+   - `MatchKit.exe --config`: Command-line configuration.
+   - `MatchKit.Tray.exe --config`: GUI configuration editor.
 
-- `MatchKit.exe --config`: For command-line based configuration.
-- `MatchKit.Tray.exe --config`: For a GUI-based configuration editor.
-   Both require admin privileges to save changes.
+## Usage Notes
 
-## Usage
+### Command-Line Options
 
-### Command-Line Options Overview
+Key options for `MatchKit.exe` and `MatchKit.Tray.exe`:
 
-MatchKit's behavior is controlled by command-line options. Settings can be saved to the registry for persistent configurations, especially for `MatchKit.Tray.exe`.
+- `-w, --window`: Window identifier (process name, title, or regex). **[Required]**
+- `-r, --regex`: Regex pattern for extraction. Use `()` for capture groups. **[Required]**
+- `-u, --url`: (Optional) URL template for API GET requests (e.g., `http://api.example.com/items/$1`).
+- `-j, --json-key`: (Optional) Dot notation path for JSON value (e.g., `data.name`).
+- `-d, --debug`: (Optional) Enable detailed debug logging.
+- `-k, --hotkey`: (Tray app) Global hotkey (e.g., "Ctrl+Shift+R"). Also used with `MatchKit.exe --save`.
+- `-c, --config`: Interactive configuration mode (admin rights needed to save).
+- `-s, --save`: (`MatchKit.exe` only) Saves command-line settings to registry (admin rights needed).
+- `-l, --list-windows`: (`MatchKit.exe` only) Lists open windows.
 
-**Common Operational Options (for `MatchKit.exe` and `MatchKit.Tray.exe`):**
-These options define the core automation task for a single execution or for a hotkey's action if not loading from a saved configuration.
+### Console Application (`MatchKit.exe`)
 
-- `-w, --window`: Window identifier. This can be a process name (e.g., `notepad.exe`), an exact window title (e.g., "Untitled - Notepad"), or a regex pattern to match a window title (e.g., "Invoice .*"). **[Required]**
-- `-r, --regex`: The regular expression pattern used to find and extract text from the targeted window. Use parentheses `()` to define capture groups. The content of the first capture group (`$1`) is typically used for API calls or as the final output. **[Required]**
-- `-u, --url`: (Optional) A URL template. If provided, the extracted text (usually from the first regex capture group, `$1`) will be inserted into this URL, and an HTTP GET request will be made. For example: `http://api.example.com/items/$1`.
-- `-j, --json-key`: (Optional) If the `--url` option is used and the API returns a JSON response, this specifies the path (using dot notation) to the desired value within the JSON object. For example: `data.name` or `results[0].id`.
-- `-d, --debug`: (Optional) Enable debug logging. This will print more detailed information about the automation process, including all text extracted from the window and the full API response, which is very helpful for troubleshooting.
+For direct automation and testing. Output is to console.
 
-**Configuration Options (Managing Persistent Settings):**
-These options are used to save, load, and manage automation configurations in the Windows Registry. This allows `MatchKit.Tray.exe` to remember settings and hotkeys across sessions. Running these typically requires administrator privileges.
-
-- `-c, --config`: Interactive configuration mode.
-  - When used with `MatchKit.exe`: Starts a command-line interface to guide you through setting and saving default parameters (window, regex, URL, JSON key, hotkey) to the registry.
-  - When used with `MatchKit.Tray.exe`: Opens a graphical user interface (GUI) window that allows you to manage and save these parameters to the registry.
-- `-s, --save` (`MatchKit.exe` only): Saves the operational command-line arguments (`-w`, `-r`, `-u`, `-j`, `-k`) provided in the same command as the new default configuration in the registry. This is useful for scripting setups or pre-configuring MatchKit.
-
-**`MatchKit.exe` (Console Application) Specific Options:**
-
-- `-l, --list-windows`: Lists all currently open, visible windows with their titles and process names. This helps you find the correct identifier for the `-w, --window` option.
-
-**`MatchKit.Tray.exe` (System Tray Application) Specific Options:**
-
-- `-k, --hotkey`: Specifies the global hotkey combination that will trigger the automation (e.g., "Ctrl+Shift+R", "Alt+F1").
-  - If `MatchKit.Tray.exe` is launched with this option, it will use the provided parameters for this session, overriding any saved configuration.
-  - If `MatchKit.Tray.exe` is launched *without* this option (and other operational arguments), it will attempt to load the configuration (including the hotkey) from the registry (previously saved using `--config` or `MatchKit.exe --save`).
-  - If no arguments are provided and no configuration is saved in the registry, the tray application may not have a default hotkey and will need to be configured.
-
-### Console Application (MatchKit.exe)
-
-Command-line tool for direct automation tasks, ideal for testing configurations.
-
-#### List Available Windows
-
+Examples:
 ```bash
 MatchKit.exe --list-windows
-```
-
-#### Basic Text Extraction
-
-```bash
-# Extract a 4-digit number from Notepad
-MatchKit.exe -w "notepad" -r "\d{4}"
-
-# Extract using process name and capture group
 MatchKit.exe -w "notepad.exe" -r "Invoice: (\w+)"
-```
-
-If a value is extracted, it will be printed to the console.
-
-#### With API Integration
-
-```bash
-# Extract text, call API, and display response field
 MatchKit.exe -w "MyApp" -r "ID: (\d+)" -u "http://api.example.com/items/$1" -j "data.name"
 ```
 
-### System Tray Application (MatchKit.Tray.exe)
+### System Tray Application (`MatchKit.Tray.exe`)
 
-Windows system tray application for hotkey-triggered automation. It runs in the background and waits for the configured hotkey.
+Runs in background for hotkey automation.
 
-#### Basic Usage
-
+Examples:
 ```bash
-# Simple hotkey automation (overrides saved config for this session)
+# Run with saved configuration (set via --config or MatchKit.exe --save)
+MatchKit.Tray.exe
+
+# Override saved config for this session
 MatchKit.Tray.exe -w "notepad" -r "\d{4}" -k "Ctrl+R"
-
-# With API call and JSON extraction (overrides saved config for this session)
-MatchKit.Tray.exe -w "MyApp" -r "ID: (\d+)" -u "http://api.example.com/items/$1" -j "data.name" -k "Ctrl+Shift+D"
-
-# Run with saved configuration from registry (recommended for general use)
-# Ensure configuration (including hotkey) was previously set via --config or MatchKit.exe --save
-MatchKit.Tray.exe
 ```
 
-#### Supported Hotkey Formats
-
-- Single key + modifier: `Ctrl+R`, `Alt+F1`, `Shift+A`
-- Multiple modifiers: `Ctrl+Shift+R`, `Ctrl+Alt+D`
-- Function keys: `F1` through `F12`
-- Number keys: `0` through `9`
-- Letter keys: `A` through `Z`
-
-## Real-World Examples
-
-### Extract and Look Up Invoice Numbers
-
-```bash
-# Console version for testing
-MatchKit.exe -w "InvoiceApp" -r "INV-(\d{6})" -u "http://erp.company.com/api/invoices/$1" -j "invoice.total"
-
-# Tray version with hotkey (after saving the above config with MatchKit.exe --save -k "Ctrl+I")
-MatchKit.Tray.exe
-# Or, run directly overriding/without saved config:
-# MatchKit.Tray.exe -w "InvoiceApp" -r "INV-(\d{6})" -u "http://erp.company.com/api/invoices/$1" -j "invoice.total" -k "Ctrl+I"
-```
-
-### Medical Report Integration (DXA/DEXA)
-
-This example shows a more complex regex and specific API endpoint.
-
-```bash
-# Configuration to be saved using MatchKit.exe --save -k "Ctrl+T":
-# -w "PowerScribe" -r "(A\d{8,}[A-Z]{2})" -u "http://10.200.63.74:3000/en/show/exam/$1/template/5/format/text.json" -j "body"
-
-# Then run Tray app:
-MatchKit.Tray.exe
-
-# Or, to test/run directly:
-MatchKit.Tray.exe -w "PowerScribe" -r "(A\d{8,}[A-Z]{2})" -u "http://10.200.63.74:3000/en/show/exam/$1/template/5/format/text.json" -j "body" -k "Ctrl+T"
-```
-
-The regex `(A\d{8,}[A-Z]{2})` looks for an accession number starting with 'A', followed by 8 or more digits, and ending with two uppercase letters.
-
-### Customer ID Lookup
-
-```bash
-# Save this config using MatchKit.exe --save -k "Alt+C":
-# -w "CRM" -r "CUST(\d+)" -u "https://api.crm.com/customers/$1" -j "customer.email"
-
-# Then run Tray app:
-MatchKit.Tray.exe
-
-# Or, to test/run directly:
-MatchKit.Tray.exe -w "CRM" -r "CUST(\d+)" -u "https://api.crm.com/customers/$1" -j "customer.email" -k "Alt+C"
-```
+Supported Hotkey Formats: `Ctrl+R`, `Alt+F1`, `Ctrl+Shift+R`, `F5`, `A`, etc.
 
 ## Testing Your Configuration
 
-1. **Test with Console First**: Always test your regex and API calls with the console app:
-
-   ```bash
-   MatchKit.exe -w "YourApp" -r "YourRegex" -u "YourAPI" -j "json.path" -d
-   ```
-
-2. **Verify Output**: Ensure you're getting the expected results in the console. Use `-d` for debug output.
-
-3. **(Optional) Save for Tray App**: If the console command works perfectly, use `MatchKit.exe` with the same operational arguments plus `--save` and your desired `-k "Hotkey"` to save it to the registry.
-
-   ```bash
-   MatchKit.exe -w "YourApp" -r "YourRegex" -u "YourAPI" -j "json.path" -k "Ctrl+R" --save
-   ```
-
-4. **Deploy to Tray**: Run `MatchKit.Tray.exe` (ideally without arguments, to load the saved configuration). Press your hotkey to test.
-
-   ```bash
-   MatchKit.Tray.exe
-   ```
-
-   If you need to test the tray app with parameters directly (without saving), use:
-
-   ```bash
-   MatchKit.Tray.exe -w "YourApp" -r "YourRegex" -u "YourAPI" -j "json.path" -k "Ctrl+R"
-   ```
+1.  **Console First**: Test regex and API calls with `MatchKit.exe`:
+    ```bash
+    MatchKit.exe -w "YourApp" -r "YourRegex" -u "YourAPI" -j "json.path" -d
+    ```
+2.  **Verify Output**: Check console for expected results. Use `-d` for debug details.
+3.  **(Optional) Save for Tray**: If console command works, save with `MatchKit.exe --save`:
+    ```bash
+    MatchKit.exe -w "YourApp" -r "YourRegex" -u "YourAPI" -j "json.path" -k "Ctrl+R" --save
+    ```
+4.  **Deploy to Tray**: Run `MatchKit.Tray.exe` (ideally no arguments, to load saved config). Press hotkey.
+    To test tray with direct parameters (no save):
+    ```bash
+    MatchKit.Tray.exe -w "YourApp" -r "YourRegex" -u "YourAPI" -j "json.path" -k "Ctrl+R"
+    ```
 
 ## JSON Path Syntax
 
-The `-j` parameter supports standard JSON path notation:
-
-- Simple property: `name`
-- Nested property: `data.customer.name`
-- Array index: `items[0]`
-- Array property: `items[0].name`
-- Deep nesting: `response.data.records[0].details.value`
+`-j` parameter uses standard JSON path:
+- Property: `name`
+- Nested: `data.customer.name`
+- Array: `items[0].name`
 
 ## Troubleshooting
 
-### Window Not Found
-
-- Use `MatchKit.exe --list-windows` to see available windows
-- Try using the exact process name (e.g., `notepad.exe`)
-- For windows with changing titles, use a regex pattern
-
-### Regex Not Matching
-
-- Test your regex at a site like regex101.com
-- Use debug mode (`-d`) to see extracted text
-- Remember that `()` creates capture groups - `$1` uses the first group
-
-### API Issues
-
-- Verify the URL is accessible
-- Check if authentication is required
-- Use debug mode to see the full response
-- Test the API separately with tools like Postman
-
-### Hotkey Conflicts
-
-- Choose a hotkey not used by other applications (the `-k` or `--hotkey` option).
-- Try different combinations if one doesn't work.
-- Some applications may intercept certain hotkeys
-
-### Clipboard/Paste Issues
-
-- Ensure the target application has focus
-- Some applications may have paste restrictions
-- Try increasing the delay in code if needed (this would require modifying the source code)
+- **Window Not Found**: `MatchKit.exe --list-windows`. Try process name (`notepad.exe`). Use regex for dynamic titles.
+- **Regex Not Matching**: Test at regex101.com. Use `-d` (debug). `()` creates capture groups; `$1` is the first.
+- **API Issues**: Verify URL. Check auth. Use `-d` for full response. Test API with Postman.
+- **Hotkey Conflicts**: Choose a unique hotkey. Try different combinations.
+- **Clipboard/Paste**: Ensure target app has focus. Check for paste restrictions.
 
 ## Support
 
-For issues, questions, or contributions, please use the GitHub Issues page for the project.
+For issues or questions, see GitHub Issues for the project.
