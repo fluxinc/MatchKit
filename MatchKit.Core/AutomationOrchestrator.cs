@@ -2,7 +2,7 @@ using System;
 using System.Threading.Tasks;
 using Newtonsoft.Json.Linq;
 
-namespace Grabador.Core
+namespace MatchKit.Core
 {
     /// <summary>
     /// Orchestrates the complete automation workflow: text extraction, URL calling, and JSON parsing.
@@ -11,6 +11,7 @@ namespace Grabador.Core
     public class AutomationOrchestrator
     {
         private readonly TextAutomationService _automationService;
+        public TextAutomationService AutomationService => _automationService;
 
         public AutomationOrchestrator(bool debugMode = false)
         {
@@ -52,7 +53,7 @@ namespace Grabador.Core
             try
             {
                 // Step 1: Extract text using regex
-                if (config.DebugMode) Console.WriteLine($"[AutomationOrchestrator] Processing window: {config.WindowIdentifier} with regex: {config.RegexPattern}");
+                Console.WriteLine($"[AutomationOrchestrator] Processing window: {config.WindowIdentifier} with regex: {config.RegexPattern}");
 
                 var (matchedText, extractError) = await _automationService.ExtractAndMatchAsync(config.WindowIdentifier, config.RegexPattern);
 
@@ -76,10 +77,10 @@ namespace Grabador.Core
                 // Step 2: Call URL if provided
                 if (!string.IsNullOrEmpty(config.UrlTemplate))
                 {
-                    if (config.DebugMode) Console.WriteLine($"[AutomationOrchestrator] URL template provided: {config.UrlTemplate}");
+                    Console.WriteLine($"[AutomationOrchestrator] URL template provided: {config.UrlTemplate}");
 
                     string actualUrl = config.UrlTemplate.Replace("$1", Uri.EscapeDataString(matchedText));
-                    if (config.DebugMode) Console.WriteLine($"[AutomationOrchestrator] Calling URL: {actualUrl}");
+                    Console.WriteLine($"[AutomationOrchestrator] Calling URL: {actualUrl}");
 
                     var (responseBody, httpError) = await HttpUtilityService.GetUrlContentAsync(actualUrl);
 
@@ -128,6 +129,7 @@ namespace Grabador.Core
             {
                 result.Success = false;
                 result.Error = $"Unexpected error: {ex.Message}";
+                Console.WriteLine($"[AutomationOrchestrator] Exception caught: {ex}");
                 return result;
             }
         }

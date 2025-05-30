@@ -6,8 +6,8 @@
         <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
         <ProjectGuid>{35B59D3D-4A02-4ACF-B066-604A9DE58F8D}</ProjectGuid>
         <OutputType>WinExe</OutputType>
-        <RootNamespace>Grabador.Tray</RootNamespace>
-        <AssemblyName>Grabador.Tray</AssemblyName>
+        <RootNamespace>MatchKit.Tray</RootNamespace>
+        <AssemblyName>MatchKit.Tray</AssemblyName>
         <TargetFrameworkVersion>v4.8.1</TargetFrameworkVersion>
         <FileAlignment>512</FileAlignment>
         <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
@@ -45,12 +45,19 @@
         <Reference Include="System.Net.Http"/>
         <Reference Include="System.Windows.Forms"/>
         <Reference Include="System.Xml"/>
+        <Reference Include="UIAutomationClient" />
     </ItemGroup>
     <ItemGroup>
         <PackageReference Include="System.CommandLine" Version="2.0.0-beta4.22272.1" />
         <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
     </ItemGroup>
     <ItemGroup>
+        <Compile Include="ConfigurationForm.cs">
+            <SubType>Form</SubType>
+        </Compile>
+        <Compile Include="ConfigurationForm.Designer.cs">
+            <DependentUpon>ConfigurationForm.cs</DependentUpon>
+        </Compile>
         <Compile Include="Form1.cs">
             <SubType>Form</SubType>
         </Compile>
@@ -61,6 +68,9 @@
         <Compile Include="HotkeyParser.cs"/>
         <Compile Include="Program.cs"/>
         <Compile Include="Properties\AssemblyInfo.cs"/>
+        <EmbeddedResource Include="ConfigurationForm.resx">
+            <DependentUpon>ConfigurationForm.cs</DependentUpon>
+        </EmbeddedResource>
         <EmbeddedResource Include="Properties\Resources.resx">
             <Generator>ResXFileCodeGenerator</Generator>
             <LastGenOutput>Resources.Designer.cs</LastGenOutput>
@@ -84,9 +94,9 @@
         <None Include="App.config"/>
     </ItemGroup>
     <ItemGroup>
-      <ProjectReference Include="..\Grabador.Core\Grabador.Core.csproj">
+      <ProjectReference Include="..\MatchKit.Core\MatchKit.Core.csproj">
         <Project>{f70f4f0e-510d-45e2-88fe-7e679aec6b9f}</Project>
-        <Name>Grabador.Core</Name>
+        <Name>MatchKit.Core</Name>
       </ProjectReference>
     </ItemGroup>
     <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets"/>

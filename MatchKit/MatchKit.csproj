@@ -8,8 +8,8 @@
         <ProjectGuid>{212204F6-420D-4631-BED4-B0A18918608F}</ProjectGuid>
         <OutputType>Exe</OutputType>
         <AppDesignerFolder>Properties</AppDesignerFolder>
-        <RootNamespace>Grabador</RootNamespace>
-        <AssemblyName>Grabador</AssemblyName>
+        <RootNamespace>MatchKit</RootNamespace>
+        <AssemblyName>MatchKit</AssemblyName>
         <TargetFrameworkVersion>v4.8.1</TargetFrameworkVersion>
         <FileAlignment>512</FileAlignment>
         <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
@@ -54,9 +54,9 @@
         <Compile Include="Properties\AssemblyInfo.cs"/>
     </ItemGroup>
     <ItemGroup>
-      <ProjectReference Include="..\Grabador.Core\Grabador.Core.csproj">
+      <ProjectReference Include="..\MatchKit.Core\MatchKit.Core.csproj">
         <Project>{f70f4f0e-510d-45e2-88fe-7e679aec6b9f}</Project>
-        <Name>Grabador.Core</Name>
+        <Name>MatchKit.Core</Name>
       </ProjectReference>
     </ItemGroup>
     <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets"/>

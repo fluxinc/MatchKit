@@ -1,4 +1,4 @@
-namespace Grabador.Tray
+namespace MatchKit.Tray
 {
     partial class Form1
     {

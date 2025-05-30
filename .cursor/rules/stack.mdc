@@ -9,13 +9,13 @@ alwaysApply: true
 
 ## Folder Structure
 
-- Grabador.Core/
-  - Grabador.Core.csproj - Shared library project
+- MatchKit.Core/
+  - MatchKit.Core.csproj - Shared library project
   - *.cs - Shared classes
-- Grabador/
-  - Grabador.csproj - Console application project
+- MatchKit/
+  - MatchKit.csproj - Console application project
   - Program.cs - Console application entry point
-- Grabador.sln - Main solution file
+- MatchKit.sln - Main solution file
 - README.md - Project README file
 
 ## Libaries

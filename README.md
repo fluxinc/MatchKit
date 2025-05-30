@@ -1,4 +1,4 @@
-# Grabador
+# MatchKit
 
 A powerful Windows automation tool that extracts text from any application using UI Automation, processes it with regex patterns, optionally calls web APIs, and can paste results back into applications. Available as both a console application and a system tray application with global hotkey support.
 
@@ -14,7 +14,7 @@ A powerful Windows automation tool that extracts text from any application using
 
 ## Components
 
-### Grabador.Core
+### MatchKit.Core
 
 Shared library providing core functionality:
 
@@ -22,7 +22,7 @@ Shared library providing core functionality:
 - `HttpUtilityService`: HTTP client for API calls
 - `AutomationOrchestrator`: Workflow orchestration used by both console and tray apps
 
-### Grabador (Console Application)
+### MatchKit (Console Application)
 
 Command-line tool for direct automation tasks:
 
@@ -31,7 +31,7 @@ Command-line tool for direct automation tasks:
 - Call APIs and process responses
 - Perfect for testing configurations
 
-### Grabador.Tray (System Tray Application)
+### MatchKit.Tray (System Tray Application)
 
 Windows system tray application for hotkey-triggered automation:
 
@@ -52,50 +52,50 @@ Windows system tray application for hotkey-triggered automation:
 
 ```bash
 # Clone the repository
-git clone https://github.com/mostlydev/Grabador.git
-cd grabador
+git clone https://github.com/fluxinc/MatchKit.git
+cd MatchKit
 
 # Build the solution
-msbuild Grabador.sln /p:Configuration=Release
+msbuild MatchKit.sln /p:Configuration=Release
 
 # Or build individual projects
-msbuild Grabador.Core\Grabador.Core.csproj
-msbuild Grabador\Grabador.csproj
-msbuild Grabador.Tray\Grabador.Tray.csproj
+msbuild MatchKit.Core\MatchKit.Core.csproj
+msbuild MatchKit\MatchKit.csproj
+msbuild MatchKit.Tray\MatchKit.Tray.csproj
 ```
 
 ### Binary Installation
 
-Download the latest release from the [Releases](https://github.com/mostlydev/Grabador/releases) page.
+Download the latest release from the [Releases](https://github.com/fluxinc/MatchKit/releases) page.
 
 ## Usage
 
-### Console Application (Grabador.exe)
+### Console Application (MatchKit.exe)
 
 #### List Available Windows
 
 ```bash
-Grabador.exe --list-windows
+MatchKit.exe --list-windows
 ```
 
 #### Basic Text Extraction
 
 ```bash
 # Extract a 4-digit number from Notepad
-Grabador.exe -w "notepad" -r "\d{4}"
+MatchKit.exe -w "notepad" -r "\d{4}"
 
 # Extract using process name
-Grabador.exe -w "notepad.exe" -r "Invoice: (\w+)"
+MatchKit.exe -w "notepad.exe" -r "Invoice: (\w+)"
 ```
 
 #### With API Integration
 
 ```bash
 # Extract text, call API, and display response
-Grabador.exe -w "MyApp" -r "ID: (\d+)" -u "http://api.example.com/items/$1"
+MatchKit.exe -w "MyApp" -r "ID: (\d+)" -u "http://api.example.com/items/$1"
 
 # Extract text, call API, and extract JSON field
-Grabador.exe -w "MyApp" -r "ID: (\d+)" -u "http://api.example.com/items/$1" -j "data.name"
+MatchKit.exe -w "MyApp" -r "ID: (\d+)" -u "http://api.example.com/items/$1" -j "data.name"
 ```
 
 #### Command-Line Options
@@ -106,17 +106,19 @@ Grabador.exe -w "MyApp" -r "ID: (\d+)" -u "http://api.example.com/items/$1" -j "
 - `-j, --json-key`: JSON path to extract from response (dot notation)
 - `-l, --list-windows`: List all available windows
 - `-d, --debug`: Enable debug logging
+- `-c, --config`: Interactive configuration mode (requires admin privileges)
+- `-s, --save`: Saves command line settings to registry (requires admin privileges)
 
-### System Tray Application (Grabador.Tray.exe)
+### System Tray Application (MatchKit.Tray.exe)
 
 #### Basic Usage
 
 ```bash
 # Simple hotkey automation
-Grabador.Tray.exe -w "notepad" -r "\d{4}" -h "Ctrl+R"
+MatchKit.Tray.exe -w "notepad" -r "\d{4}" -h "Ctrl+R"
 
 # With API call and JSON extraction
-Grabador.Tray.exe -w "MyApp" -r "ID: (\d+)" -u "http://api.example.com/items/$1" -j "data.name" -h "Ctrl+D"
+MatchKit.Tray.exe -w "MyApp" -r "ID: (\d+)" -u "http://api.example.com/items/$1" -j "data.name" -h "Ctrl+D"
 ```
 
 #### Command-Line Options
@@ -142,24 +144,24 @@ Grabador.Tray.exe -w "MyApp" -r "ID: (\d+)" -u "http://api.example.com/items/$1"
 
 ```bash
 # Console version
-Grabador.exe -w "InvoiceApp" -r "INV-(\d{6})" -u "http://erp.company.com/api/invoices/$1" -j "invoice.total"
+MatchKit.exe -w "InvoiceApp" -r "INV-(\d{6})" -u "http://erp.company.com/api/invoices/$1" -j "invoice.total"
 
 # Tray version with hotkey
-Grabador.Tray.exe -w "InvoiceApp" -r "INV-(\d{6})" -u "http://erp.company.com/api/invoices/$1" -j "invoice.total" -h "Ctrl+I"
+MatchKit.Tray.exe -w "InvoiceApp" -r "INV-(\d{6})" -u "http://erp.company.com/api/invoices/$1" -j "invoice.total" -h "Ctrl+I"
 ```
 
 ### Medical Report Integration (DXA/DEXA)
 
 ```bash
 # Extract accession number and fetch report
-Grabador.Tray.exe -w "PowerScribe" -r "\d{8}" -u "http://10.200.63.74:3000/en/show/exam/$1/template/5/format/text.json" -j "body" -h "Ctrl+T"
+MatchKit.Tray.exe -w "PowerScribe" -r "\d{8}" -u "http://10.200.63.74:3000/en/show/exam/$1/template/5/format/text.json" -j "body" -h "Ctrl+T"
 ```
 
 ### Customer ID Lookup
 
 ```bash
 # Extract customer ID and fetch details
-Grabador.Tray.exe -w "CRM" -r "CUST(\d+)" -u "https://api.crm.com/customers/$1" -j "customer.email" -h "Alt+C"
+MatchKit.Tray.exe -w "CRM" -r "CUST(\d+)" -u "https://api.crm.com/customers/$1" -j "customer.email" -h "Alt+C"
 ```
 
 ## Testing Your Configuration
@@ -167,15 +169,15 @@ Grabador.Tray.exe -w "CRM" -r "CUST(\d+)" -u "https://api.crm.com/customers/$1" 
 1. **Test with Console First**: Always test your regex and API calls with the console app:
 
    ```bash
-   Grabador.exe -w "YourApp" -r "YourRegex" -u "YourAPI" -j "json.path" -d
+   MatchKit.exe -w "YourApp" -r "YourRegex" -u "YourAPI" -j "json.path" -d
    ```
 
 2. **Verify Output**: Ensure you're getting the expected results
 
-3. **Deploy to Tray**: Once working, use the same parameters with Grabador.Tray:
+3. **Deploy to Tray**: Once working, use the same parameters with MatchKit.Tray:
 
    ```bash
-   Grabador.Tray.exe -w "YourApp" -r "YourRegex" -u "YourAPI" -j "json.path" -h "Ctrl+R"
+   MatchKit.Tray.exe -w "YourApp" -r "YourRegex" -u "YourAPI" -j "json.path" -h "Ctrl+R"
    ```
 
 ## JSON Path Syntax
@@ -192,7 +194,7 @@ The `-j` parameter supports standard JSON path notation:
 
 ### Window Not Found
 
-- Use `Grabador.exe --list-windows` to see available windows
+- Use `MatchKit.exe --list-windows` to see available windows
 - Try using the exact process name (e.g., `notepad.exe`)
 - For windows with changing titles, use a regex pattern
 
@@ -224,14 +226,14 @@ The `-j` parameter supports standard JSON path notation:
 ## Architecture
 
 ```
-Grabador.sln
-├── Grabador.Core/           # Shared library
+MatchKit.sln
+├── MatchKit.Core/           # Shared library
 │   ├── TextAutomationService.cs
 │   ├── HttpUtilityService.cs
 │   └── AutomationOrchestrator.cs
-├── Grabador/                # Console application
+├── MatchKit/                # Console application
 │   └── Program.cs
-└── Grabador.Tray/          # System tray application
+└── MatchKit.Tray/          # System tray application
     ├── Program.cs
     ├── TrayApplicationContext.cs
     └── HotkeyParser.cs
@@ -262,4 +264,4 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ## Support
 
-For issues, questions, or contributions, please use the [GitHub Issues](https://github.com/mostlydev/Grabador/issues) page.
+For issues, questions, or contributions, please use the [GitHub Issues](https://github.com/mostlydev/MatchKit/issues) page.
