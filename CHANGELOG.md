@@ -10,10 +10,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [v1.0.1] - 2025-05-30
 
 ### Changed
+
 - Console output across the application (both `MatchKit.exe` and `MatchKit.Tray.exe` debug console) is now conditional on the debug flag (`-d` or `--debug`). Standard operation for `MatchKit.exe` will only output the final extracted value, unless in debug mode.
 - Error messages, interactive configuration prompts, and help output remain unconditional.
 
 ### Removed
+
 - Numerous unnecessary code comments left by previous automated tooling, improving code readability.
 
 ## [v1.0.0] - 2025-05-29

@@ -261,7 +261,7 @@ namespace MatchKit.Tray
                         // This is a heuristic. A more robust way would be to check mutex ownership or command line args if possible.
                         if (process.MainWindowHandle == IntPtr.Zero) // Tray apps often don't have a main window handle visible this way
                         {
-                            if (debugMode) Console.WriteLine($"Attempting to close process ID: {process.Id}");
+                            Console.WriteLine($"Attempting to close process ID: {process.Id}");
                             process.Kill();
                             process.WaitForExit(5000); // Wait up to 5 seconds
                         }
