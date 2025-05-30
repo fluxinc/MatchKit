@@ -5,7 +5,9 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased] - YYYY-MM-DD
+## [Unreleased]
+
+## [v1.0.0] - 2025-05-29
 
 ### Added
 
@@ -14,7 +16,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - `--config` command-line flag for `MatchKit.exe` (console) to interactively set and save registry defaults via CLI prompts.
   - `--config` command-line flag for `MatchKit.Tray.exe` to launch a GUI form (`ConfigurationForm.cs`) for managing registry defaults.
   - `--save` command-line flag for `MatchKit.exe` (console) to silently save provided operational arguments (window, regex, URL, JSON key, hotkey) to the registry.
-- **Memory Bank**: Systematically updated to reflect new features and installer strategies for the core MatchKit application.
 
 ### Changed
 
