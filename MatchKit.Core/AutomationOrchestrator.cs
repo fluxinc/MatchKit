@@ -48,14 +48,14 @@ namespace MatchKit.Core
         /// </summary>
         public async Task<AutomationResult> ExecuteAsync(AutomationConfig config)
         {
-            var result = new AutomationResult();
+            AutomationResult result = new AutomationResult();
 
             try
             {
                 // Step 1: Extract text using regex
                 if (config.DebugMode) Console.WriteLine($"[AutomationOrchestrator] Processing window: {config.WindowIdentifier} with regex: {config.RegexPattern}");
 
-                var (matchedText, extractError) = await _automationService.ExtractAndMatchAsync(config.WindowIdentifier, config.RegexPattern);
+                (string? matchedText, string? extractError) = await _automationService.ExtractAndMatchAsync(config.WindowIdentifier, config.RegexPattern);
 
                 if (extractError != null)
                 {
@@ -82,7 +82,7 @@ namespace MatchKit.Core
                     string actualUrl = config.UrlTemplate.Replace("$1", Uri.EscapeDataString(matchedText));
                     if (config.DebugMode) Console.WriteLine($"[AutomationOrchestrator] Calling URL: {actualUrl}");
 
-                    var (responseBody, httpError) = await HttpUtilityService.GetUrlContentAsync(actualUrl);
+                    (string? responseBody, string? httpError) = await HttpUtilityService.GetUrlContentAsync(actualUrl);
 
                     if (httpError != null)
                     {

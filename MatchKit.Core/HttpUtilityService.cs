@@ -10,22 +10,24 @@ namespace MatchKit.Core
             if (TextAutomationService.DebugMode) System.Console.WriteLine($"[CoreSvc.Http] Requesting URL: {url}");
             try
             {
-                using (HttpClient client = new HttpClient())
+                HttpClientHandler handler = new HttpClientHandler
                 {
-                    HttpResponseMessage response = await client.GetAsync(url);
-                    if (response.IsSuccessStatusCode)
-                    {
-                        string responseBody = await response.Content.ReadAsStringAsync();
-                        if (TextAutomationService.DebugMode) System.Console.WriteLine($"[CoreSvc.Http] Success: {url}, Body length: {responseBody.Length}");
-                        return (responseBody, null);
-                    }
-                    else
-                    {
-                        string error = $"HTTP Error: {response.StatusCode} - {response.ReasonPhrase}";
-                        if (TextAutomationService.DebugMode) System.Console.WriteLine($"[CoreSvc.Http] Failure: {url}, Error: {error}");
-                        return (null, error);
-                    }
+                    UseDefaultCredentials = true
+                };
+
+                using HttpClient client = new HttpClient(handler);
+                
+                HttpResponseMessage response = await client.GetAsync(url);
+                if (response.IsSuccessStatusCode)
+                {
+                    string responseBody = await response.Content.ReadAsStringAsync();
+                    if (TextAutomationService.DebugMode) System.Console.WriteLine($"[CoreSvc.Http] Success: {url}, Body length: {responseBody.Length}");
+                    return (responseBody, null);
                 }
+
+                string error = $"HTTP Error: {response.StatusCode} - {response.ReasonPhrase}";
+                if (TextAutomationService.DebugMode) System.Console.WriteLine($"[CoreSvc.Http] Failure: {url}, Error: {error}");
+                return (null, error);
             }
             catch (HttpRequestException ex)
             {

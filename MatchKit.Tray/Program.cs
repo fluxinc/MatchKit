@@ -62,7 +62,7 @@ namespace MatchKit.Tray
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
 
-            var configOption = new Option<bool>(
+            Option<bool> configOption = new Option<bool>(
                 aliases: new[] { "--config", "-c" },
                 description: "Show the configuration panel to set and save default settings to the registry.");
 
@@ -118,16 +118,15 @@ namespace MatchKit.Tray
                 {
                     if (!ElevationHelper.IsAdmin())
                     {
-                        MessageBox.Show("Administrator privileges are required for configuration. Please re-run with --config as an administrator.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        MessageBox.Show(@"Administrator privileges are required for configuration. Please re-run with --config as an administrator.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                         Environment.Exit(1);
                         return;
                     }
 
-                    bool createdNewConfigMutex;
-                    _configMutex = new Mutex(true, ConfigMutexName, out createdNewConfigMutex);
+                    _configMutex = new Mutex(true, ConfigMutexName, out bool createdNewConfigMutex);
                     if (!createdNewConfigMutex)
                     {
-                        MessageBox.Show("Another instance of MatchKit Tray configuration is already running. Please close it and try again.", "Configuration Active", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                        MessageBox.Show(@"Another instance of MatchKit Tray configuration is already running. Please close it and try again.", "Configuration Active", MessageBoxButtons.OK, MessageBoxIcon.Information);
                         Environment.Exit(1);
                         return;
                     }
@@ -142,8 +141,8 @@ namespace MatchKit.Tray
 
                     // After configuration, ask to kill other instances
                     DialogResult killResult = MessageBox.Show(
-                        "Configuration saved. Do you want to close any existing MatchKit.Tray instances to apply changes?",
-                        "Restart Instances?",
+                        @"Configuration saved. Do you want to close any existing MatchKit.Tray instances to apply changes?",
+                        @"Restart Instances?",
                         MessageBoxButtons.YesNo,
                         MessageBoxIcon.Question);
 
@@ -156,7 +155,6 @@ namespace MatchKit.Tray
                     return;
                 }
 
-                ConfigData loadedConfig = null;
                 bool operationalArgsProvided = false;
 
                 if (originalArgs.Length > 0)
@@ -175,14 +173,14 @@ namespace MatchKit.Tray
                     }
                 }
 
+                if (debugMode) AllocateDebugConsole();
                 if (!operationalArgsProvided)
                 {
-                    if (debugMode) AllocateDebugConsole();
-                    if (debugMode) Console.WriteLine("No command-line arguments provided. Attempting to load from registry...");
-                    loadedConfig = ConfigurationService.LoadConfiguration();
+                    if (debugMode) Console.WriteLine(@"No command-line arguments provided. Attempting to load from registry...");
+                    ConfigData loadedConfig = ConfigurationService.LoadConfiguration();
                     if (loadedConfig != null)
                     {
-                        if (debugMode) Console.WriteLine("Configuration loaded from registry.");
+                        if (debugMode) Console.WriteLine(@"Configuration loaded from registry.");
                         windowIdentifier = loadedConfig.WindowIdentifier;
                         regexPattern = loadedConfig.RegexPattern;
                         urlTemplate = loadedConfig.UrlTemplate;
@@ -194,7 +192,7 @@ namespace MatchKit.Tray
                         // Ensure a message is visible even if not in debug mode / no console
                         string errorMessage = "Failed to load configuration from registry and no arguments provided.\nPlease run with --config to set defaults or provide arguments directly.";
                         Console.Error.WriteLine(errorMessage); // Keep for debug/console cases
-                        MessageBox.Show(errorMessage, "Configuration Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        MessageBox.Show(errorMessage, @"Configuration Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                         if (debugMode) Console.ReadKey(); // Keep for debug behavior if console is allocated
                         Environment.Exit(1);
                         return;
@@ -202,7 +200,6 @@ namespace MatchKit.Tray
                 }
                 else
                 {
-                    if (debugMode) AllocateDebugConsole();
                     if (debugMode) Console.WriteLine("Command-line arguments provided, overriding registry settings.");
                 }
 
@@ -218,7 +215,7 @@ namespace MatchKit.Tray
                 try
                 {
                     Keys hotkey = HotkeyParser.Parse(hotkeyString);
-                    var appContext = new TrayApplicationContext(
+                    TrayApplicationContext appContext = new TrayApplicationContext(
                         windowIdentifier,
                         regexPattern,
                         urlTemplate,
@@ -253,23 +250,20 @@ namespace MatchKit.Tray
 
             foreach (Process process in processes)
             {
-                if (process.Id != currentProcess.Id)
+                if (process.Id == currentProcess.Id) continue;
+                try
                 {
-                    try
-                    {
-                        // Check if it's a tray app and not a config window
-                        // This is a heuristic. A more robust way would be to check mutex ownership or command line args if possible.
-                        if (process.MainWindowHandle == IntPtr.Zero) // Tray apps often don't have a main window handle visible this way
-                        {
-                            Console.WriteLine($"Attempting to close process ID: {process.Id}");
-                            process.Kill();
-                            process.WaitForExit(5000); // Wait up to 5 seconds
-                        }
-                    }
-                    catch (Exception ex)
-                    {
-                        Console.Error.WriteLine($"Failed to kill process {process.Id}: {ex.Message}");
-                    }
+                    // Check if it's a tray app and not a config window
+                    // This is a heuristic. A more robust way would be to check mutex ownership or command line args if possible.
+                    if (process.MainWindowHandle != IntPtr.Zero) continue; 
+                        
+                    Console.WriteLine($@"Attempting to close process ID: {process.Id}");
+                    process.Kill();
+                    process.WaitForExit(5000); // Wait up to 5 seconds
+                }
+                catch (Exception ex)
+                {
+                    Console.Error.WriteLine($"Failed to kill process {process.Id}: {ex.Message}");
                 }
             }
         }
@@ -280,27 +274,27 @@ namespace MatchKit.Tray
             {
                 try
                 {
-                    var stdOutHandle = CreateFileW("CONOUT$", GENERIC_WRITE, FILE_SHARE_WRITE, IntPtr.Zero, OPEN_EXISTING, 0, IntPtr.Zero);
+                    SafeFileHandle stdOutHandle = CreateFileW("CONOUT$", GENERIC_WRITE, FILE_SHARE_WRITE, IntPtr.Zero, OPEN_EXISTING, 0, IntPtr.Zero);
                     if (!stdOutHandle.IsInvalid)
                     {
-                        var writer = new StreamWriter(new FileStream(stdOutHandle, FileAccess.Write)) { AutoFlush = true };
+                        StreamWriter writer = new StreamWriter(new FileStream(stdOutHandle, FileAccess.Write)) { AutoFlush = true };
                         Console.SetOut(writer);
                     }
 
-                    var stdErrHandle = CreateFileW("CONOUT$", GENERIC_WRITE, FILE_SHARE_WRITE, IntPtr.Zero, OPEN_EXISTING, 0, IntPtr.Zero);
+                    SafeFileHandle stdErrHandle = CreateFileW("CONOUT$", GENERIC_WRITE, FILE_SHARE_WRITE, IntPtr.Zero, OPEN_EXISTING, 0, IntPtr.Zero);
                     if (!stdErrHandle.IsInvalid)
                     {
-                        var errorWriter = new StreamWriter(new FileStream(stdErrHandle, FileAccess.Write)) { AutoFlush = true };
+                        StreamWriter errorWriter = new StreamWriter(new FileStream(stdErrHandle, FileAccess.Write)) { AutoFlush = true };
                         Console.SetError(errorWriter);
                     }
 
-                    var stdInHandle = CreateFileW("CONIN$", GENERIC_READ, FILE_SHARE_READ, IntPtr.Zero, OPEN_EXISTING, 0, IntPtr.Zero);
+                    SafeFileHandle stdInHandle = CreateFileW("CONIN$", GENERIC_READ, FILE_SHARE_READ, IntPtr.Zero, OPEN_EXISTING, 0, IntPtr.Zero);
                     if (!stdInHandle.IsInvalid)
                     {
-                        var reader = new StreamReader(new FileStream(stdInHandle, FileAccess.Read));
+                        StreamReader reader = new StreamReader(new FileStream(stdInHandle, FileAccess.Read));
                         Console.SetIn(reader);
                     }
-                    Console.WriteLine("Debug console allocated and I/O redirected.");
+                    Console.WriteLine(@"Debug console allocated and I/O redirected.");
                 }
                 catch (Exception ex)
                 {
