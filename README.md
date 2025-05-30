@@ -4,6 +4,12 @@
   <img src="assets/matchkit-logo.png" alt="MatchKit Logo" width="400">
 </p>
 
+<p align="center">
+  <a href='http://makeapullrequest.com'><img alt='PRs Welcome' src='https://img.shields.io/badge/PRs-welcome-brightgreen.svg?style=shields'/></a>
+  <img alt="GitHub commit activity" src="https://img.shields.io/github/commit-activity/m/fluxinc/MatchKit"/>
+  <img alt="GitHub closed issues" src="https://img.shields.io/github/issues-closed/fluxinc/MatchKit"/>
+</p>
+
 A powerful Windows automation tool that extracts text from any application using UI Automation, processes it with regex patterns, optionally calls web APIs, and can paste results back into applications. Available as both a console application and a system tray application with global hotkey support.
 
 ## Features
