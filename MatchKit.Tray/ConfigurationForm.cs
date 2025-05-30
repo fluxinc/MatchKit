@@ -1,8 +1,8 @@
-using Grabador.Core;
+using MatchKit.Core;
 using System;
 using System.Windows.Forms;
 
-namespace Grabador.Tray
+namespace MatchKit.Tray
 {
     public partial class ConfigurationForm : Form
     {

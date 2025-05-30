@@ -5,20 +5,20 @@ using System.Runtime.InteropServices;
 using System.Windows.Forms;
 using System.IO;
 using Microsoft.Win32.SafeHandles;
-using Grabador.Core;
+using MatchKit.Core;
 using System.Linq;
 using System.Threading; // For Mutex
 using System.Diagnostics; // For Process
 
-namespace Grabador.Tray
+namespace MatchKit.Tray
 {
     static class Program
     {
         private static Mutex _configMutex = null;
-        private const string ConfigMutexName = "Global\\GrabadorTrayConfigMutex";
+        private const string ConfigMutexName = "Global\\MatchKitTrayConfigMutex";
         // The hotkey-specific mutex will be managed in TrayApplicationContext,
         // but its name might be constructed here or passed to it.
-        public const string TrayAppMutexPrefix = "Global\\GrabadorTrayAppMutex_";
+        public const string TrayAppMutexPrefix = "Global\\MatchKitTrayAppMutex_";
 
         [DllImport("kernel32.dll", SetLastError = true)]
         [return: MarshalAs(UnmanagedType.Bool)]
@@ -66,7 +66,7 @@ namespace Grabador.Tray
                 aliases: new[] { "--config", "-c" },
                 description: "Show the configuration panel to set and save default settings to the registry.");
 
-            RootCommand rootCommand = new RootCommand("Grabador.Tray - A system tray application for hotkey-triggered text extraction and automation.");
+            RootCommand rootCommand = new RootCommand("MatchKit.Tray - A system tray application for hotkey-triggered text extraction and automation.");
             rootCommand.AddOption(configOption);
 
             Option<string> windowIdentifierOption = new Option<string>(
@@ -127,7 +127,7 @@ namespace Grabador.Tray
                     _configMutex = new Mutex(true, ConfigMutexName, out createdNewConfigMutex);
                     if (!createdNewConfigMutex)
                     {
-                        MessageBox.Show("Another instance of Grabador Tray configuration is already running. Please close it and try again.", "Configuration Active", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                        MessageBox.Show("Another instance of MatchKit Tray configuration is already running. Please close it and try again.", "Configuration Active", MessageBoxButtons.OK, MessageBoxIcon.Information);
                         Environment.Exit(1);
                         return;
                     }
@@ -142,14 +142,14 @@ namespace Grabador.Tray
 
                     // After configuration, ask to kill other instances
                     DialogResult killResult = MessageBox.Show(
-                        "Configuration saved. Do you want to close any existing Grabador.Tray instances to apply changes?",
+                        "Configuration saved. Do you want to close any existing MatchKit.Tray instances to apply changes?",
                         "Restart Instances?",
                         MessageBoxButtons.YesNo,
                         MessageBoxIcon.Question);
 
                     if (killResult == DialogResult.Yes)
                     {
-                        KillOtherGrabadorTrayInstances();
+                        KillOtherMatchKitTrayInstances();
                     }
 
                     Environment.Exit(0);
@@ -246,7 +246,7 @@ namespace Grabador.Tray
             rootCommand.InvokeAsync(args).GetAwaiter().GetResult();
         }
 
-        private static void KillOtherGrabadorTrayInstances()
+        private static void KillOtherMatchKitTrayInstances()
         {
             Process currentProcess = Process.GetCurrentProcess();
             Process[] processes = Process.GetProcessesByName(currentProcess.ProcessName);

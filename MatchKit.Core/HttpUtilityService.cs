@@ -1,7 +1,7 @@
 using System.Net.Http;
 using System.Threading.Tasks;
 
-namespace Grabador.Core
+namespace MatchKit.Core
 {
     public static class HttpUtilityService
     {

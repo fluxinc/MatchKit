@@ -1,4 +1,4 @@
-namespace Grabador.Tray
+namespace MatchKit.Tray
 {
     partial class ConfigurationForm
     {
@@ -155,7 +155,7 @@ namespace Grabador.Tray
             this.MaximizeBox = false;
             this.MinimizeBox = false;
             this.Name = "ConfigurationForm";
-            this.Text = "Grabador Configuration";
+            this.Text = "MatchKit Configuration";
             this.ResumeLayout(false);
             this.PerformLayout();
 

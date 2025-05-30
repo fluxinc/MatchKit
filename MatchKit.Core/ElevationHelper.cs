@@ -6,7 +6,7 @@ using System.Security.Principal;
 // System.Windows.Forms is not used here to keep it console-friendly.
 // If GUI dialogs are strictly needed, it can be added, but Console.Error is preferred.
 
-namespace Grabador.Core
+namespace MatchKit.Core
 {
     public static class ElevationHelper
     {

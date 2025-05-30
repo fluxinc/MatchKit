@@ -3,11 +3,11 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.13.36105.23 d17.13
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Grabador", "Grabador\Grabador.csproj", "{212204F6-420D-4631-BED4-B0A18918608F}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MatchKit", "MatchKit\MatchKit.csproj", "{212204F6-420D-4631-BED4-B0A18918608F}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Grabador.Core", "Grabador.Core\Grabador.Core.csproj", "{F70F4F0E-510D-45E2-88FE-7E679AEC6B9F}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MatchKit.Core", "MatchKit.Core\MatchKit.Core.csproj", "{F70F4F0E-510D-45E2-88FE-7E679AEC6B9F}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Grabador.Tray", "Grabador.Tray\Grabador.Tray.csproj", "{35B59D3D-4A02-4ACF-B066-604A9DE58F8D}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MatchKit.Tray", "MatchKit.Tray\MatchKit.Tray.csproj", "{35B59D3D-4A02-4ACF-B066-604A9DE58F8D}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

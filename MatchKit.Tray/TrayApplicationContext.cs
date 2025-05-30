@@ -2,11 +2,11 @@ using System;
 using System.Drawing;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using Grabador.Core;
+using MatchKit.Core;
 using System.Threading;
 using System.Text;
 
-namespace Grabador.Tray
+namespace MatchKit.Tray
 {
     public class TrayApplicationContext : ApplicationContext
     {
@@ -72,7 +72,7 @@ namespace Grabador.Tray
             if (!createdNewMutex)
             {
                 LogThreadInfo($"[TrayApplicationContext] Mutex '{_hotkeyMutexName}' already exists. Another instance with hotkey '{hotkeyStringLiteral}' is likely running.");
-                MessageBox.Show($"An instance of Grabador.Tray with the hotkey '{hotkeyStringLiteral}' is already running.\nOnly one instance per hotkey is allowed.", "Instance Already Running", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                MessageBox.Show($"An instance of MatchKit.Tray with the hotkey '{hotkeyStringLiteral}' is already running.\nOnly one instance per hotkey is allowed.", "Instance Already Running", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 Environment.Exit(1);
                 return;
             }
@@ -100,7 +100,7 @@ namespace Grabador.Tray
             {
                 Icon = SystemIcons.Application,
                 Visible = true,
-                Text = "Grabador.Tray - Press " + hotkeyStringForDisplay
+                Text = "MatchKit.Tray - Press " + hotkeyStringForDisplay
             };
 
             var contextMenu = new ContextMenuStrip();
@@ -137,7 +137,7 @@ namespace Grabador.Tray
 
         private void ShowConfiguration(object sender, EventArgs e)
         {
-            var message = $"Grabador.Tray Configuration:\n\n" +
+            var message = $"MatchKit.Tray Configuration:\n\n" +
                           $"Window: {_config.WindowIdentifier}\n" +
                           $"Regex: {_config.RegexPattern}\n" +
                           $"URL: {_config.UrlTemplate ?? "(none)"}\n" +
@@ -145,7 +145,7 @@ namespace Grabador.Tray
                           $"Hotkey: {GetHotkeyDisplay()}\n" +
                           $"Debug Mode: {(_config.DebugMode ? "Enabled" : "Disabled")}";
 
-            MessageBox.Show(message, "Grabador.Tray Configuration",
+            MessageBox.Show(message, "MatchKit.Tray Configuration",
                 MessageBoxButtons.OK, MessageBoxIcon.Information);
         }
 
@@ -194,7 +194,7 @@ namespace Grabador.Tray
                 if (_config.DebugMode)
                 {
                     string errorWithLog = $"Error: {ex.Message}\n\nThread Log:\n{_threadLog.ToString()}";
-                    MessageBox.Show(errorWithLog, "Grabador.Tray Error",
+                    MessageBox.Show(errorWithLog, "MatchKit.Tray Error",
                         MessageBoxButtons.OK, MessageBoxIcon.Error);
                 }
                 else

@@ -1,20 +1,20 @@
-; Grabador Inno Setup Script
+; MatchKit Inno Setup Script
 
 #define MyAppConfiguration "Release"
 ; Assuming idp.iss is in a known location or Inno Setup's include paths.
 ; If not, you might need to provide a full path:
-; #include <C:\\Program Files (x86)\\Inno Download Plugin\\idp.iss>
+; #include <C:\Program Files (x86)\Inno Download Plugin\idp.iss>
 ; For now, we'll assume it's in the default search path.
 #include <idp.iss>
 
-#define MyAppName "Grabador"
-#define MyAppVersion GetVersionNumbersString('..\\Grabador.Tray\\bin\\' + MyAppConfiguration + '\\Grabador.Tray.exe')
+#define MyAppName "MatchKit"
+#define MyAppVersion GetVersionNumbersString('..\MatchKit.Tray\bin\' + MyAppConfiguration + '\MatchKit.Tray.exe')
 #if "" == MyAppVersion
-  #error 'Could not get binary version from ..\\Grabador.Tray\\bin\\' + MyAppConfiguration + '\\Grabador.Tray.exe'
+  #error 'Could not get binary version from ..\MatchKit.Tray\bin\' + MyAppConfiguration + '\MatchKit.Tray.exe'
 #endif
 #define MyAppPublisher "Flux Inc"
 #define MyAppURL "https://fluxinc.co"
-#define MyAppExeName "Grabador.Tray.exe"
+#define MyAppExeName "MatchKit.Tray.exe"
 
 [Setup]
 AppId={{4B6BC687-2813-4A0A-A660-2B271727FA17}
@@ -25,46 +25,46 @@ AppPublisher={#MyAppPublisher}
 AppPublisherURL={#MyAppURL}
 AppSupportURL={#MyAppURL}
 AppUpdatesURL={#MyAppURL} ; Optional
-DefaultDirName={autopf}\\{#MyAppPublisher}\\{#MyAppName}
+DefaultDirName={autopf}\{#MyAppPublisher}\{#MyAppName}
 OutputDir=output
-OutputBaseFilename=GrabadorSetup-{#MyAppVersion}
+OutputBaseFilename=MatchKitSetup-{#MyAppVersion}
 Compression=lzma
 ; SolidCompression=yes ; User commented this out in a previous diff
 PrivilegesRequired=admin
 DisableProgramGroupPage=yes
-; SetupIconFile=Input\\GrabadorIcon.ico ; User commented this out
-UninstallDisplayIcon={app}\\{#MyAppExeName}
+; SetupIconFile=Input\MatchKitIcon.ico ; User commented this out
+UninstallDisplayIcon={app}\{#MyAppExeName}
 
 [Languages]
 Name: "english"; MessagesFile: "compiler:Default.isl"
 
 [Files]
-Source: "..\\Grabador\\bin\\{#MyAppConfiguration}\\Grabador.exe"; DestDir: "{app}"; Flags: ignoreversion
-Source: "..\\Grabador.Tray\\bin\\{#MyAppConfiguration}\\Grabador.Tray.exe"; DestDir: "{app}"; Flags: ignoreversion
-Source: "..\\Grabador.Tray\\bin\\{#MyAppConfiguration}\\Grabador.Core.dll"; DestDir: "{app}"; Flags: ignoreversion
-Source: "..\\Grabador.Tray\\bin\\{#MyAppConfiguration}\\*.dll"; DestDir: "{app}"; Flags: ignoreversion
-Source: "..\\Grabador.Tray\\bin\\{#MyAppConfiguration}\\*.config"; DestDir: "{app}"; Flags: ignoreversion
-Source: "..\\Grabador.Tray\\bin\\{#MyAppConfiguration}\\*.pdb"; DestDir: "{app}"; Flags: ignoreversion
+Source: "..\MatchKit\bin\{#MyAppConfiguration}\MatchKit.exe"; DestDir: "{app}"; Flags: ignoreversion
+Source: "..\MatchKit.Tray\bin\{#MyAppConfiguration}\MatchKit.Tray.exe"; DestDir: "{app}"; Flags: ignoreversion
+Source: "..\MatchKit.Tray\bin\{#MyAppConfiguration}\MatchKit.Core.dll"; DestDir: "{app}"; Flags: ignoreversion
+Source: "..\MatchKit.Tray\bin\{#MyAppConfiguration}\*.dll"; DestDir: "{app}"; Flags: ignoreversion
+Source: "..\MatchKit.Tray\bin\{#MyAppConfiguration}\*.config"; DestDir: "{app}"; Flags: ignoreversion
+Source: "..\MatchKit.Tray\bin\{#MyAppConfiguration}\*.pdb"; DestDir: "{app}"; Flags: ignoreversion
 ; Documentation
-; Source: "..\\README.md"; DestDir: "{app}"; Flags: ignoreversion isreadme;
-; Source: "..\\LICENSE"; DestDir: "{app}"; DestName: "LICENSE.txt"; Flags: ignoreversion isreadme;
+; Source: "..\README.md"; DestDir: "{app}"; Flags: ignoreversion isreadme;
+; Source: "..\LICENSE"; DestDir: "{app}"; DestName: "LICENSE.txt"; Flags: ignoreversion isreadme;
 
 [Icons]
 ; Remove Start Menu shortcuts
-; Name: "{autoprograms}\\{#MyAppName}\\Grabador Console"; Filename: "{app}\\Grabador.exe"
-; Name: "{autoprograms}\\{#MyAppName}\\Grabador Tray"; Filename: "{app}\\{#MyAppExeName}"
+; Name: "{autoprograms}\{#MyAppName}\MatchKit Console"; Filename: "{app}\MatchKit.exe"
+; Name: "{autoprograms}\{#MyAppName}\MatchKit Tray"; Filename: "{app}\{#MyAppExeName}"
 
 ; Add Desktop shortcut for All Users if the task is selected
-Name: "{commondesktop}\\{#MyAppName} Tray"; Filename: "{app}\\{#MyAppExeName}"; Tasks: desktopicon; WorkingDir: "{app}"
+Name: "{commondesktop}\{#MyAppName} Tray"; Filename: "{app}\{#MyAppExeName}"; Tasks: desktopicon; WorkingDir: "{app}"
 
 [Tasks]
 Name: desktopicon; Description: "Create a desktop shortcut for all users"; GroupDescription: "Additional shortcuts:"
 
 [Registry]
-Root: HKCU; SubKey: "Software\\Microsoft\\Windows\\CurrentVersion\\Run"; ValueType: string; ValueName: "{#MyAppName}Tray"; ValueData: "\""{app}\\{#MyAppExeName}\"""; Flags: uninsdeletevalue
+Root: HKCU; SubKey: "Software\Microsoft\Windows\CurrentVersion\Run"; ValueType: string; ValueName: "{#MyAppName}Tray"; ValueData: "\""{app}\{#MyAppExeName}\"""; Flags: uninsdeletevalue
 
 [Run]
-Filename: "{app}\\{#MyAppExeName}"; Parameters: "--config"; Description: "Launch application configuration"; Flags: postinstall waituntilterminated skipifsilent
+Filename: "{app}\{#MyAppExeName}"; Parameters: "--config"; Description: "Launch application configuration"; Flags: postinstall waituntilterminated skipifsilent
 
 [Code]
 function Framework48IsNotInstalled(): Boolean;
@@ -73,7 +73,7 @@ var
   regVersion: Cardinal;
 begin
   Result := True;
-  bSuccess := RegQueryDWordValue(HKLM, 'Software\\Microsoft\\NET Framework Setup\\NDP\\v4\\Full', 'Release', regVersion);
+  bSuccess := RegQueryDWordValue(HKLM, 'Software\Microsoft\NET Framework Setup\NDP\v4\Full', 'Release', regVersion);
   if (True = bSuccess) and (regVersion >= 528040) then begin
     Result := False;
   end;
@@ -83,7 +83,7 @@ procedure InitializeWizard;
 begin
   if Framework48IsNotInstalled() then
   begin
-    idpAddFile('https://go.microsoft.com/fwlink/?linkid=2088631', ExpandConstant('{tmp}\\\\NetFrameworkInstaller.exe'));
+    idpAddFile('https://go.microsoft.com/fwlink/?linkid=2088631', ExpandConstant('{tmp}\\NetFrameworkInstaller.exe'));
     idpDownloadAfter(wpReady);
   end;
 end;
@@ -141,7 +141,7 @@ begin
   WizardForm.StatusLabel.Caption := 'Installing .NET Framework 4.8. This might take a few minutes...';
   WizardForm.ProgressGauge.Style := npbstMarquee;
   try
-    if not Exec(ExpandConstant('{tmp}\\NetFrameworkInstaller.exe'), '/passive /norestart', '', SW_SHOW, ewWaitUntilTerminated, ResultCode) then
+    if not Exec(ExpandConstant('{tmp}\NetFrameworkInstaller.exe'), '/passive /norestart', '', SW_SHOW, ewWaitUntilTerminated, ResultCode) then
     begin
       MsgBox('.NET Framework 4.8 installation failed. Result Code: ' + IntToStr(ResultCode) + '.' + #13#10 +
              'You may need to install it manually and then re-run this installer.', mbError, MB_OK);
@@ -149,7 +149,7 @@ begin
   finally
     WizardForm.StatusLabel.Caption := StatusText;
     WizardForm.ProgressGauge.Style := npbstNormal;
-    DeleteFile(ExpandConstant('{tmp}\\NetFrameworkInstaller.exe'));
+    DeleteFile(ExpandConstant('{tmp}\NetFrameworkInstaller.exe'));
   end;
 end;
 

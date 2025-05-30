@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace Grabador.Tray.Properties
+namespace MatchKit.Tray.Properties
 {
     /// <summary>
     ///   A strongly-typed resource class, for looking up localized strings, etc.
@@ -45,7 +45,7 @@ namespace Grabador.Tray.Properties
                 if ((resourceMan == null))
                 {
                     global::System.Resources.ResourceManager temp =
-                        new global::System.Resources.ResourceManager("Grabador.Tray.Properties.Resources",
+                        new global::System.Resources.ResourceManager("MatchKit.Tray.Properties.Resources",
                             typeof(Resources).Assembly);
                     resourceMan = temp;
                 }

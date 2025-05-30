@@ -1,7 +1,7 @@
 using System;
 using System.Windows.Forms;
 
-namespace Grabador.Tray
+namespace MatchKit.Tray
 {
     /// <summary>
     /// Utility class to parse hotkey strings into Keys enum values

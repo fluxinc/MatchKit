@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Runtime.InteropServices;
 
-namespace Grabador.Tray
+namespace MatchKit.Tray
 {
     public partial class Form1 : Form
     {

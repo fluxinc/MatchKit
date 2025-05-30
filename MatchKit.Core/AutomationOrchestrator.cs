@@ -2,7 +2,7 @@ using System;
 using System.Threading.Tasks;
 using Newtonsoft.Json.Linq;
 
-namespace Grabador.Core
+namespace MatchKit.Core
 {
     /// <summary>
     /// Orchestrates the complete automation workflow: text extraction, URL calling, and JSON parsing.

@@ -6,8 +6,8 @@
         <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
         <ProjectGuid>{35B59D3D-4A02-4ACF-B066-604A9DE58F8D}</ProjectGuid>
         <OutputType>WinExe</OutputType>
-        <RootNamespace>Grabador.Tray</RootNamespace>
-        <AssemblyName>Grabador.Tray</AssemblyName>
+        <RootNamespace>MatchKit.Tray</RootNamespace>
+        <AssemblyName>MatchKit.Tray</AssemblyName>
         <TargetFrameworkVersion>v4.8.1</TargetFrameworkVersion>
         <FileAlignment>512</FileAlignment>
         <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
@@ -94,9 +94,9 @@
         <None Include="App.config"/>
     </ItemGroup>
     <ItemGroup>
-      <ProjectReference Include="..\Grabador.Core\Grabador.Core.csproj">
+      <ProjectReference Include="..\MatchKit.Core\MatchKit.Core.csproj">
         <Project>{f70f4f0e-510d-45e2-88fe-7e679aec6b9f}</Project>
-        <Name>Grabador.Core</Name>
+        <Name>MatchKit.Core</Name>
       </ProjectReference>
     </ItemGroup>
     <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets"/>

@@ -6,18 +6,18 @@ using System.Threading.Tasks;
 using System.Threading; // Added for Mutex
 // Remove using System.Net.Http; // No longer needed here
 // Remove using System.Diagnostics; // If only used by removed Process.GetProcessesByName
-// Remove using System.Windows.Automation; // Will be handled by Grabador.Core
-// Remove using System.Text.RegularExpressions; // Will be handled by Grabador.Core
+// Remove using System.Windows.Automation; // Will be handled by MatchKit.Core
+// Remove using System.Text.RegularExpressions; // Will be handled by MatchKit.Core
 // Remove using System.Runtime.InteropServices; // If all P/Invokes are gone
 // Remove using System.Windows.Forms; // If only used for hotkeys
-using Grabador.Core; // For TextAutomationService, HttpUtilityService, and ElevationHelper
+using MatchKit.Core; // For TextAutomationService, HttpUtilityService, and ElevationHelper
 
-namespace Grabador
+namespace MatchKit
 {
     internal class Program
     {
         private static Mutex _configMutex = null;
-        private const string ConfigMutexName = "Global\\GrabadorConsoleConfigMutex";
+        private const string ConfigMutexName = "Global\\MatchKitConsoleConfigMutex";
 
         // All P/Invoke declarations for global hotkey, message loop structures (MSG, POINT),
         // and related constants (HOTKEY_ID, MOD_*, WM_HOTKEY, ERROR_*) are removed.
@@ -177,7 +177,7 @@ namespace Grabador
                     if (!createdNew)
                     {
                         Console.ForegroundColor = ConsoleColor.Yellow;
-                        Console.WriteLine("Another instance of Grabador console configuration is already running.");
+                        Console.WriteLine("Another instance of MatchKit console configuration is already running.");
                         Console.WriteLine("Please close the other instance and try again.");
                         Console.ResetColor();
                         context.ExitCode = 1;
@@ -254,11 +254,11 @@ namespace Grabador
 
                 if (!operationalArgsProvided && !listWindows) // If no operational args AND not listing windows, try registry
                 {
-                    if (debugEnabled) Console.WriteLine("[Grabador] No command-line arguments. Attempting to load from registry...");
+                    if (debugEnabled) Console.WriteLine("[MatchKit] No command-line arguments. Attempting to load from registry...");
                     loadedConfig = ConfigurationService.LoadConfiguration();
                     if (loadedConfig != null)
                     {
-                        if (debugEnabled) Console.WriteLine("[Grabador] Configuration loaded from registry.");
+                        if (debugEnabled) Console.WriteLine("[MatchKit] Configuration loaded from registry.");
                         windowIdentifier = loadedConfig.WindowIdentifier;
                         regexPattern = loadedConfig.RegexPattern;
                         urlTemplate = loadedConfig.UrlTemplate;
@@ -281,14 +281,14 @@ namespace Grabador
                 }
                 else if (operationalArgsProvided)
                 {
-                    if (debugEnabled) Console.WriteLine("[Grabador] Command-line arguments provided, overriding registry settings.");
+                    if (debugEnabled) Console.WriteLine("[MatchKit] Command-line arguments provided, overriding registry settings.");
                 }
 
                 var orchestrator = new AutomationOrchestrator(debugEnabled);
 
                 if (listWindows)
                 {
-                    if (debugEnabled) Console.WriteLine("[Grabador] --list-windows / -l flag active. Listing windows...");
+                    if (debugEnabled) Console.WriteLine("[MatchKit] --list-windows / -l flag active. Listing windows...");
                     orchestrator.ListAvailableWindows();
                 }
                 else

@@ -2,7 +2,7 @@ using Microsoft.Win32;
 using System;
 using System.Security.Permissions;
 
-namespace Grabador.Core
+namespace MatchKit.Core
 {
     public class ConfigData
     {
@@ -15,7 +15,7 @@ namespace Grabador.Core
 
     public static class ConfigurationService
     {
-        private const string RegistryPath = "SOFTWARE\\Grabador"; // For HKEY_LOCAL_MACHINE
+        private const string RegistryPath = "SOFTWARE\\MatchKit"; // For HKEY_LOCAL_MACHINE
 
         public static void SaveConfiguration(ConfigData data)
         {
